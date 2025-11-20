@@ -211,6 +211,27 @@ If Primary site considered fail (i.e. multiple failovers of one or more applicat
 if it is a Distributed Component Architecture)), then the Primary site should shutdown and thus Standby site
 would be required to be started up. 
 
+## Running locally
+
+Build the executable JAR:
+```
+./mvnw -DskipTests package
+```
+
+Run on default port 3001:
+```
+./run.sh
+```
+
+Override port (example 3001):
+```
+PORT=3001 ./run.sh
+# or
+java -Dport=3001 -jar target/Snowman.jar
+```
+
+Note: The app embeds Jetty and serves the webapp from classpath:/webapp. No WAR unpacking is required.
+
 ## Author
 
 Colin But.

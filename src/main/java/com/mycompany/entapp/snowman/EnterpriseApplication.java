@@ -13,6 +13,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
  * EnterpriseApplication boots an embedded Jetty and serves the webapp packaged inside the shaded JAR.
+ * This configuration uses classpath resources for the webapp so the application runs directly from the
+ * shaded JAR without unpacking a WAR directory on disk.
  */
 public class EnterpriseApplication {
 
@@ -22,7 +24,7 @@ public class EnterpriseApplication {
      * classpath:/webapp using web.xml for the servlet configuration.
      *
      * System properties:
-     * -Dport=<int>        Optional. The TCP port that Jetty should listen on. Defaults to 8090 if not provided.
+     * -Dport=<int>        Optional. The TCP port that Jetty should listen on. Defaults to 3001 if not provided.
      * -Dserver.port=<int> Optional. Alternative property name supported by the platform.
      *
      * To run:
@@ -30,7 +32,7 @@ public class EnterpriseApplication {
      * or with a custom port:
      *   java -Dport=3001 -jar target/Snowman.jar
      */
-    private static final int DEFAULT_PORT = 8090;
+    private static final int DEFAULT_PORT = 3001;
 
     private EnterpriseApplication() {
         // no-op

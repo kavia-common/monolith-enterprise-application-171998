@@ -308,8 +308,17 @@
     <build>
         <finalName>Snowman</finalName>
         <resources>
+            <!-- Default resources -->
             <resource>
                 <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <!-- Ensure webapp is packaged into the JAR at /webapp -->
+            <resource>
+                <directory>src/main/resources/webapp</directory>
+                <targetPath>webapp</targetPath>
                 <includes>
                     <include>**/*</include>
                 </includes>
@@ -356,6 +365,8 @@
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <finalName>Snowman</finalName>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <!-- Do not minimize to avoid stripping required Jetty classes like ShutdownThread -->
+                            <minimizeJar>false</minimizeJar>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
