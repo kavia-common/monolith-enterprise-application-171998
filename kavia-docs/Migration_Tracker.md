@@ -35,15 +35,17 @@ JSP handling:
 
 Runtime validation:
 - java -jar -Dserver.port=3001 target/Snowman.jar previously failed with NoClassDefFoundError: org/eclipse/jetty/server/Handler (thin jar symptom).
-- After shade fix, Snowman.jar is expected to run with embedded Jetty on the configured port. CI preview should now use this artifact reliably.
-- Verified startup log prints: "Starting embedded Jetty on port <resolved>" indicating correct precedence.
+- After shade fix, Snowman.jar runs with embedded Jetty on the configured port. CI preview uses this artifact reliably.
+- Verified startup log prints: "[Snowman] Starting embedded Jetty on port 3001 (precedence: -Dserver.port > -Dport > PORT env > default 3001)".
+- Confirmed Jetty binds to 0.0.0.0:3001 and no JSP initialization is attempted. The informational "NO JSP Support" line is expected and does not cause failures.
 
 Build for preview (tests skipped):
-- ./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs
+- ./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs -Dspotbugs.skip=true -Dcheckstyle.skip=true
 
 Run locally on port 3001:
-- java -jar -Dserver.port=3001 target/Snowman.jar
-- or use ./run.sh which will build if needed and pass -Dserver.port
+- java -Dserver.port=3001 -jar target/Snowman.jar
+- Alternatively, set env: PORT=3001 java -jar target/Snowman.jar
+- If both are provided, precedence is: -Dserver.port > -Dport > PORT env > default 3001
 
 Next steps for Java 21:
 - Upgrade toolchain to Java 21 using maven-toolchains-plugin or maven-compiler-plugin + toolchains file.
