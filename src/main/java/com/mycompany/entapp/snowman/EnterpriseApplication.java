@@ -34,7 +34,12 @@ public class EnterpriseApplication {
 
         final ServerConnector serverConnector = new ServerConnector(server);
 
-        serverConnector.setPort(resolvePort());
+        final int port = resolvePort();
+        serverConnector.setPort(port);
+
+        // Simple startup log to confirm resolved port precedence at runtime
+        System.out.println("[Snowman] Starting embedded Jetty on port " + port
+                + " (precedence: -Dserver.port > -Dport > PORT env > default 3001)");
 
         server.setConnectors(new Connector[]{serverConnector});
 
@@ -45,6 +50,10 @@ public class EnterpriseApplication {
         webAppContext.setBaseResource(base);
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
+
+        // JSP handling note:
+        // This application does not use JSPs. We intentionally do NOT register a JSP servlet
+        // or JspHandler to avoid unnecessary initialization and warnings on startup.
 
         server.setHandler(webAppContext);
         server.start();

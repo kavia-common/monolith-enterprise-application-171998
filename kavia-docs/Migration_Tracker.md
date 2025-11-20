@@ -21,9 +21,29 @@ Resolutions implemented:
 - Kept Jetty dependencies with compile scope (not provided) so they are packaged into the fat jar.
 - Simplified resources plugin configuration to defaults to avoid permission issues.
 
+Port override support:
+- Embedded Jetty bootstrap now resolves port with precedence:
+  1) -Dserver.port
+  2) -Dport
+  3) PORT environment variable
+  4) default 3001
+- The resolved port is applied to the ServerConnector and logged at startup.
+
+JSP handling:
+- Decision: JSPs are not used in this application. We intentionally do not configure JSP support (no JettyJspServlet/JspHandler).
+- This removes JSP initialization warnings during startup and reduces footprint. If JSPs are needed in the future, add org.eclipse.jetty:apache-jsp (javax variant for Jetty 9.4.x) and configure a JSP servlet in web.xml or programmatically.
+
 Runtime validation:
 - java -jar -Dserver.port=3001 target/Snowman.jar previously failed with NoClassDefFoundError: org/eclipse/jetty/server/Handler (thin jar symptom).
 - After shade fix, Snowman.jar is expected to run with embedded Jetty on the configured port. CI preview should now use this artifact reliably.
+- Verified startup log prints: "Starting embedded Jetty on port <resolved>" indicating correct precedence.
+
+Build for preview (tests skipped):
+- ./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs
+
+Run locally on port 3001:
+- java -jar -Dserver.port=3001 target/Snowman.jar
+- or use ./run.sh which will build if needed and pass -Dserver.port
 
 Next steps for Java 21:
 - Upgrade toolchain to Java 21 using maven-toolchains-plugin or maven-compiler-plugin + toolchains file.
