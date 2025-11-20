@@ -215,22 +215,23 @@ would be required to be started up.
 
 Build the executable JAR:
 ```
-./mvnw -DskipTests package
+CI=true ./mvnw -DskipTests package
 ```
 
 Run on default port 3001:
 ```
-./run.sh
+java -Dserver.port=3001 -jar target/Snowman.jar
 ```
 
-Override port (example 3001):
+Health check:
 ```
-PORT=3001 ./run.sh
-# or
-java -Dport=3001 -jar target/Snowman.jar
+curl -i http://localhost:3001/health
 ```
 
-Note: The app embeds Jetty and serves the webapp from classpath:/webapp. No WAR unpacking is required.
+Notes:
+- The app embeds Jetty and runs as a REST-only service. No WAR-style /webapp folder is required at runtime.
+- Database initialization is optional and disabled by default (db.enabled=false). The app will start without MySQL or ActiveMQ.
+- To change the port you can also use: -Dport=3001
 
 ## Author
 

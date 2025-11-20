@@ -315,14 +315,7 @@
                     <include>**/*</include>
                 </includes>
             </resource>
-            <!-- Ensure webapp is packaged into the JAR at /webapp -->
-            <resource>
-                <directory>src/main/resources/webapp</directory>
-                <targetPath>webapp</targetPath>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
+            <!-- No explicit webapp resources needed; REST-only embedded Jetty setup -->
         </resources>
         <plugins>
             <plugin>

@@ -8,25 +8,27 @@ package com.mycompany.entapp.snowman;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
 /**
- * EnterpriseApplication boots an embedded Jetty and serves the webapp packaged inside the shaded JAR.
- * This configuration uses classpath resources for the webapp so the application runs directly from the
- * shaded JAR without unpacking a WAR directory on disk.
+ * EnterpriseApplication boots an embedded Jetty as a REST-only service using Spring MVC.
+ * No WAR-style webapp folder is required; the Spring DispatcherServlet is configured programmatically.
  *
  * Notes:
- * - Jetty dependencies are aligned to pom property ${jetty.version} (9.4.53.v20231009) with compile scope.
- * - maven-shade-plugin does not minimize and merges META-INF/services to keep Jetty modules (e.g. ShutdownThread).
- * - Web resources under src/main/resources/webapp/** are packaged to classpath:/webapp for WebAppContext.
+ * - Jetty dependencies are aligned to pom property ${jetty.version} (9.4.53.v20231009).
+ * - maven-shade-plugin is configured to avoid minimizing away required Jetty classes.
+ * - server.port defaults to 3001 and can be overridden with -Dport or -Dserver.port.
  */
 public class EnterpriseApplication {
 
     // PUBLIC_INTERFACE
     /**
-     * Application entrypoint. Bootstraps an embedded Jetty server and deploys the bundled webapp found under
-     * classpath:/webapp using web.xml for the servlet configuration.
+     * Application entrypoint. Bootstraps an embedded Jetty server and registers Spring's DispatcherServlet
+     * to serve REST controllers discovered by the Spring context defined under META-INF/application-context.xml.
      *
      * System properties:
      * -Dport=<int>        Optional. The TCP port that Jetty should listen on. Defaults to 3001 if not provided.
@@ -35,7 +37,7 @@ public class EnterpriseApplication {
      * To run:
      *   java -jar target/Snowman.jar
      * or with a custom port:
-     *   java -Dport=3001 -jar target/Snowman.jar
+     *   java -Dserver.port=3001 -jar target/Snowman.jar
      */
     private static final int DEFAULT_PORT = 3001;
 
@@ -49,26 +51,26 @@ public class EnterpriseApplication {
         connector.setPort(resolvePort());
         server.setConnectors(new Connector[]{connector});
 
-        // Configure WebAppContext to load resources from classpath so it works from shaded JAR
-        WebAppContext webAppContext = new WebAppContext();
-        webAppContext.setContextPath("/");
-        webAppContext.setParentLoaderPriority(true);
+        // Create a context handler for servlets without relying on a WAR/webapp folder
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+        context.setContextPath("/");
 
-        // Use Jetty Resource to load from classpath. Do NOT set WAR file system path.
-        // Ensure descriptor (web.xml) and base resource (webapp root) are resolved from classpath.
-        Resource webXml = Resource.newClassPathResource("/webapp/WEB-INF/web.xml");
-        if (webXml == null || !webXml.exists()) {
-            throw new IllegalStateException("Cannot locate web.xml at classpath:/webapp/WEB-INF/web.xml");
-        }
-        webAppContext.setDescriptor(webXml.getURI().toString());
+        // Initialize Spring root context via ContextLoaderListener
+        XmlWebApplicationContext rootContext = new XmlWebApplicationContext();
+        rootContext.setConfigLocation("classpath:META-INF/application-context.xml");
+        context.addEventListener(new ContextLoaderListener(rootContext));
 
-        Resource webappRoot = Resource.newClassPathResource("/webapp");
-        if (webappRoot == null || !webappRoot.exists()) {
-            throw new IllegalStateException("Cannot locate webapp directory at classpath:/webapp");
-        }
-        webAppContext.setBaseResource(webappRoot);
+        // Register Spring DispatcherServlet mapped to "/"
+        XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
+        mvcContext.setParent(rootContext);
+        // Reuse prior servlet XML if any additional beans are needed; otherwise, controller component scan picks up @RestController
+        mvcContext.setConfigLocation("classpath:/webapp/WEB-INF/SpringServlet-servlet.xml");
+        DispatcherServlet dispatcherServlet = new DispatcherServlet(mvcContext);
+        ServletHolder servletHolder = new ServletHolder("SpringServlet", dispatcherServlet);
+        servletHolder.setInitOrder(1);
+        context.addServlet(servletHolder, "/");
 
-        server.setHandler(webAppContext);
+        server.setHandler(context);
         server.start();
 
         // Clean shutdown
@@ -79,7 +81,7 @@ public class EnterpriseApplication {
                     server.stop();
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // swallow to allow JVM exit
             }
         }));
 
