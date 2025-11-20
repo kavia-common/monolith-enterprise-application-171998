@@ -14,13 +14,6 @@
           <include>**/*</include>
         </includes>
       </resource>
-      <resource>
-        <targetPath>webapp</targetPath>
-        <directory>src/main/resources/webapp</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
     </resources>
     <finalName>Snowman</finalName>
     <plugins>
