@@ -16,8 +16,8 @@
         <java.version>1.7</java.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.7.3</powermock.version>
-        <!-- Pin Jetty 11.x to keep jakarta.servlet namespace and avoid mixing versions -->
-        <jetty.version>11.0.26</jetty.version>
+        <!-- Use Jetty 9.4.x which matches javax.servlet API used by this codebase (web.xml is javax 3.0) -->
+        <jetty.version>9.4.53.v20231009</jetty.version>
         <jaxrs.version>2.0</jaxrs.version>
         <bean.validation.version>2.0.0.Final</bean.validation.version>
         <expression.language.version>3.0.0</expression.language.version>
@@ -39,8 +39,10 @@
         <quartz.version>2.3.2</quartz.version>
         <!-- Add javax annotation api for PostConstruct used by codebase -->
         <javax.annotation.version>1.3.2</javax.annotation.version>
-        <!-- Use Jakarta JMS API to match jakarta.* imports used by code -->
-        <jakarta.jms.version>3.1.0</jakarta.jms.version>
+        <!-- javax JMS API for compatibility with Spring 4.x and ActiveMQ 5.x -->
+        <javax.jms.version>1.1</javax.jms.version>
+        <!-- javax Servlet API to align with Jetty 9.4 (javax namespace) -->
+        <javax.servlet.api.version>3.1.0</javax.servlet.api.version>
     </properties>
 
     <dependencies>
@@ -249,11 +251,18 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- Jakarta JMS API -->
+        <!-- javax JMS API (Spring 4 / ActiveMQ 5.x expect javax.jms) -->
         <dependency>
-            <groupId>jakarta.jms</groupId>
-            <artifactId>jakarta.jms-api</artifactId>
-            <version>${jakarta.jms.version}</version>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>${javax.jms.version}</version>
+        </dependency>
+
+        <!-- javax Servlet API to match Jetty 9.x (javax namespace) -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet.api.version}</version>
         </dependency>
 
         <dependency>
@@ -309,6 +318,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
+                    <!-- Replace the original artifact with the shaded one so target/Snowman.jar is runnable -->
                     <createDependencyReducedPom>true</createDependencyReducedPom>
                     <filters>
                         <filter>
@@ -329,8 +339,8 @@
                         </goals>
                         <configuration>
                             <finalName>Snowman</finalName>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+                            <!-- Do not attach with a classifier; overwrite the main artifact so Snowman.jar is shaded -->
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
