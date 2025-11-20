@@ -34,4 +34,4 @@ else
 fi
 
 echo "Starting Snowman on port ${PORT}..."
-exec java -Dport="${PORT}" -jar "$JAR_PATH"
+exec java -Dport="${PORT}" -Dserver.port="${PORT}" -jar "$JAR_PATH"

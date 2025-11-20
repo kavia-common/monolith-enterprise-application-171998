@@ -31,7 +31,9 @@ public class EnterpriseApplication {
 
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setDescriptor(getResource("webapp/WEB-INF/web.xml"));
-        webAppContext.setResourceBase(getResource("webapp"));
+        // setResourceBase expects a filesystem path or external form; getResource returns URL string.
+        // Convert to an absolute filesystem path to satisfy older Jetty APIs.
+        webAppContext.setResourceBase(getResourceFilePath("webapp"));
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
 
@@ -63,6 +65,15 @@ public class EnterpriseApplication {
             throw new RuntimeException("Unable to fetch specified resource: " + resourceName);
         }
         return resourceURL.toString();
+    }
+
+    private static String getResourceFilePath(String resourceName) {
+        URL resourceURL = EnterpriseApplication.class.getClassLoader().getResource(resourceName);
+        if (resourceURL == null) {
+            throw new RuntimeException("Unable to fetch specified resource: " + resourceName);
+        }
+        // URL#getFile provides a decoded filesystem path suitable for Jetty setResourceBase on older APIs
+        return resourceURL.getFile();
     }
 
     private static int resolvePort() {
