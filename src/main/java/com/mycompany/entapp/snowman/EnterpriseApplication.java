@@ -90,10 +90,19 @@ public class EnterpriseApplication {
     }
 
     private static int resolvePort() {
-        try {
-            return Integer.parseInt(System.getProperty("port"));
-        } catch (NumberFormatException ex) {
-            return DEFAULT_PORT;
+        // Compatibility: prefer -Dport, but if absent and -Dserver.port is provided (used by preview),
+        // use that value as a fallback. Defaults to 8090 if neither is provided or parsing fails.
+        String primary = System.getProperty("port");
+        String fallback = System.getProperty("server.port");
+        String candidate = (primary != null && !primary.isEmpty()) ? primary : fallback;
+
+        if (candidate != null && !candidate.isEmpty()) {
+            try {
+                return Integer.parseInt(candidate);
+            } catch (NumberFormatException ignore) {
+                // ignore and use default
+            }
         }
+        return DEFAULT_PORT;
     }
 }
