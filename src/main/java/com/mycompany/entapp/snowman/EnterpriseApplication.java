@@ -15,6 +15,11 @@ import org.eclipse.jetty.webapp.WebAppContext;
  * EnterpriseApplication boots an embedded Jetty and serves the webapp packaged inside the shaded JAR.
  * This configuration uses classpath resources for the webapp so the application runs directly from the
  * shaded JAR without unpacking a WAR directory on disk.
+ *
+ * Notes:
+ * - Jetty dependencies are aligned to pom property ${jetty.version} (9.4.53.v20231009) with compile scope.
+ * - maven-shade-plugin does not minimize and merges META-INF/services to keep Jetty modules (e.g. ShutdownThread).
+ * - Web resources under src/main/resources/webapp/** are packaged to classpath:/webapp for WebAppContext.
  */
 public class EnterpriseApplication {
 

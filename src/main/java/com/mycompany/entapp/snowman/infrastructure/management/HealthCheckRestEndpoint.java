@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthCheckRestEndpoint {
 
+    /**
+     * PUBLIC_INTERFACE
+     * GET /health
+     * Returns basic health information for service readiness/liveness checks.
+     */
+
     @Autowired
     private HealthCheck healthCheck;
 
