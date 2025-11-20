@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.mycompany.entapp.snowman.infrastructure.rest.mappers.UserResourceMapperUTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 s -- in com.mycompany.entapp.snowman.infrastructure.rest.mappers.UserResourceMapperUTest
