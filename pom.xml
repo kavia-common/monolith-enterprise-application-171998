@@ -245,7 +245,6 @@
                 <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <!-- Do not attempt to preserve file modes (prevents Operation not permitted on some FS) -->
                     <overwrite>true</overwrite>
                     <useDefaultDelimiters>true</useDefaultDelimiters>
                     <nonFilteredFileExtensions>
@@ -253,21 +252,22 @@
                         <nonFilteredFileExtension>json</nonFilteredFileExtension>
                         <nonFilteredFileExtension>properties</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
-                    <!-- Use standard resource discovery; do NOT configure <resources> here since it's read-only for this plugin -->
                 </configuration>
             </plugin>
+
+            <!-- Shade to produce an uber-jar named target/Snowman.jar with the correct Main-Class -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.1</version>
                 <executions>
                     <execution>
+                        <id>shade-uber-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- Ensure final JAR is exactly target/Snowman.jar -->
                             <finalName>Snowman</finalName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
@@ -283,12 +283,10 @@
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
                             </transformers>
-                            <!-- Include the webapp resources inside the shaded jar under webapp/ -->
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <!-- Exclude signatures to avoid invalid signature warnings -->
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
@@ -300,6 +298,8 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <!-- Ensure jar is built with manifest pointing to main class (even for non-shaded builds) -->
         <pluginManagement>
             <plugins>
                 <plugin>

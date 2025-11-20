@@ -9,16 +9,17 @@ Packaging configuration (already present in `pom.xml`):
 - Resources plugin includes `src/main/resources/webapp/**` on the classpath at `webapp/` so Jetty can resolve `WEB-INF/web.xml`.
 
 Expected build output:
-- Executable fat JAR at `target/Snowman.jar`
+- Executable fat JAR at `target/Snowman.jar` (enforced via <finalName>Snowman</finalName> and shade plugin finalName).
 
 Build commands:
 - With Maven Wrapper:
-  `./mvnw -DskipTests package`
+  `./mvnw -q -DskipTests package`
 - With system Maven:
-  `mvn -DskipTests package`
+  `mvn -q -DskipTests package`
 
 Run command (as used by `run.sh`):
-- `java -Dport=3001 -Dserver.port=3001 -jar target/Snowman.jar`
+- `./run.sh 3001` (lists target/, builds if missing, and starts the discovered jar; prefers target/Snowman.jar)
+- Direct Java (if you already have the jar): `java -Dport=3001 -Dserver.port=3001 -jar target/Snowman.jar`
 
 Notes on environment error:
 - If you encounter an error like:
