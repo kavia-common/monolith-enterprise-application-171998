@@ -2,6 +2,20 @@
 
 Last updated: 2025-11-20
 
+2025-11-20 — Maven Java 21 release, plugins aligned
+- Set maven.compiler.release=21 (compile target) while allowing runtime on Java 17 if toolchain JDK 21 is unavailable.
+- Kept <java.version>21</java.version> to document intended target.
+- Upgraded/confirmed plugin versions for Java 21: maven-compiler-plugin 3.11.0, surefire 3.2.5, failsafe 3.2.5, enforcer 3.4.1, shade 3.5.1.
+- Surefire/Failsafe configured with useModulePath=false and argLine to open necessary JDK internals for legacy test frameworks on JDK 21.
+- Shade configured with minimizeJar=false to avoid stripping Jetty classes; still produces target/Snowman.jar with embedded deps and Main-Class.
+- MySQL switched to modern artifact com.mysql:mysql-connector-j and application.properties uses com.mysql.cj.jdbc.Driver (CJ).
+- Packaging remains target/Snowman.jar; startup via: java -Dserver.port=3001 -jar target/Snowman.jar.
+
+Next steps:
+- Validate build on a JDK 21 toolchain; once available, enable toolchains plugin.
+- Audit legacy javax.* deps for Java 21 runtime compatibility; plan incremental migration to Spring 6 + Jetty 11 if needed.
+- Run full unit tests on JDK 21 and address any reflective access failures.
+
 Scope:
 - Track progress of migrating Snowman backend to run on Java 21 in CI/preview environments.
 
