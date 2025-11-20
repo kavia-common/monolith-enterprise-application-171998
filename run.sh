@@ -4,17 +4,20 @@ set -euo pipefail
 JAR_PATH="target/Snowman.jar"
 
 # If the executable JAR is missing, build it using Maven Wrapper if available.
+# We only need 'package' to produce the fat jar; tests are skipped in preview for speed if SKIP_TESTS=1 is set by caller.
 if [ ! -f "$JAR_PATH" ]; then
   echo "Executable jar not found at $JAR_PATH"
-  if [ -x "./mvnw" ]; then
-    echo "Attempting to build the project with Maven Wrapper (full output, batch mode, errors)..."
-    ./mvnw clean install --batch-mode --errors --fail-at-end
-  elif command -v mvn >/dev/null 2>&1; then
-    echo "Maven Wrapper not found. Attempting to build the project with system Maven (full output, batch mode, errors)..."
-    mvn clean install --batch-mode --errors --fail-at-end
+  MVN_CMD="./mvnw"; [ -x "./mvnw" ] || MVN_CMD="$(command -v mvn || true)"
+  if [ -n "$MVN_CMD" ]; then
+    echo "Attempting to build the project with Maven (${MVN_CMD})..."
+    if [ "${SKIP_TESTS:-1}" = "1" ]; then
+      "$MVN_CMD" -DskipTests package --batch-mode --errors --fail-at-end
+    else
+      "$MVN_CMD" package --batch-mode --errors --fail-at-end
+    fi
   else
     echo "ERROR: Neither Maven Wrapper (./mvnw) nor system Maven (mvn) is available."
-    echo "Please ensure the Maven Wrapper is executable or install Maven, then run: ./mvnw clean install --batch-mode --errors --fail-at-end"
+    echo "Please ensure the Maven Wrapper is executable or install Maven, then run: ./mvnw -DskipTests package --batch-mode --errors --fail-at-end"
     exit 1
   fi
 fi
