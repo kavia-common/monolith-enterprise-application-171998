@@ -5,6 +5,8 @@
  */
 package com.mycompany.entapp.snowman;
 
+// J21-TODO: Build currently targets Java 17 in CI. Upgrade to Java 21 when environment supports it.
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
