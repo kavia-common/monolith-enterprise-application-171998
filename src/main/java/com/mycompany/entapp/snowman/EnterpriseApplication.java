@@ -47,14 +47,15 @@ public class EnterpriseApplication {
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
 
-        // Point Jetty to the web.xml within the JAR and set the resource base to classpath:/webapp
-        Resource webXml = Resource.newClassPathResource("webapp/WEB-INF/web.xml", true, false);
+        // Use Jetty Resource to load from classpath. Do NOT set WAR file system path.
+        // Ensure descriptor (web.xml) and base resource (webapp root) are resolved from classpath.
+        Resource webXml = Resource.newClassPathResource("/webapp/WEB-INF/web.xml");
         if (webXml == null || !webXml.exists()) {
             throw new IllegalStateException("Cannot locate web.xml at classpath:/webapp/WEB-INF/web.xml");
         }
         webAppContext.setDescriptor(webXml.getURI().toString());
 
-        Resource webappRoot = Resource.newClassPathResource("webapp", true, false);
+        Resource webappRoot = Resource.newClassPathResource("/webapp");
         if (webappRoot == null || !webappRoot.exists()) {
             throw new IllegalStateException("Cannot locate webapp directory at classpath:/webapp");
         }
