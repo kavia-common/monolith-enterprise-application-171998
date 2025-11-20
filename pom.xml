@@ -16,7 +16,6 @@
         <java.version>1.8</java.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.7.3</powermock.version>
-        <!-- Use Jetty 9.4.x which matches javax.servlet API used by this codebase (web.xml is javax 3.0) -->
         <jetty.version>9.4.53.v20231009</jetty.version>
         <jaxrs.version>2.0</jaxrs.version>
         <bean.validation.version>2.0.0.Final</bean.validation.version>
@@ -47,127 +46,106 @@
     </properties>
 
     <dependencies>
-
+        <!-- Common application dependencies (unchanged) -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>${jaxrs.version}</version>
         </dependency>
-
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${bean.validation.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate.validator.version}</version>
         </dependency>
-
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>${expression.language.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.el</artifactId>
             <version>${glassfish.expression.language}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache.commons-lang3.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
-        <!-- Explicit util module to ensure all handler utilities are present -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
-        <!-- Additional Jetty modules used at runtime by embedded server -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-annotations</artifactId>
@@ -183,148 +161,142 @@
             <artifactId>jetty-security</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.databind.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hyperSql.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>${derby.version}</version>
         </dependency>
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.api.version}</version>
         </dependency>
-        <!-- SLF4J binding so StaticLoggerBinder is available at runtime -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.api.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.core.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.entitymanager.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-c3p0</artifactId>
             <version>${hibernate.c3po.version}</version>
         </dependency>
-
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda.time.version}</version>
         </dependency>
-
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
         </dependency>
-
-        <!-- Support for Ehcache and others -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
-        <!-- javax JMS API (Spring 4 / ActiveMQ 5.x expect javax.jms)
-             Note: javax.jms:javax.jms-api:1.1 is not present in Maven Central; use geronimo-jms_1.1_spec which provides javax.jms 1.1 API. -->
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jms_1.1_spec</artifactId>
             <version>${javax.jms.version}</version>
         </dependency>
-
-        <!-- javax Servlet API to match Jetty 9.x (javax namespace) -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${javax.servlet.api.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-spring</artifactId>
             <version>${activemq-spring.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
+            <version>5.10.0</version>
+        </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
         </dependency>
-
-        <!-- this is also required for Spring - Quartz -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
         <finalName>Snowman</finalName>
-        <resources>
-            <!-- Default resources -->
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-            <!-- No explicit webapp resources needed; REST-only embedded Jetty setup -->
-        </resources>
         <plugins>
+            <!-- Skip tests during packaging unless explicitly requested otherwise -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
+                    <encoding>UTF-8</encoding>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
                 </configuration>
                 <executions>
                     <execution>
@@ -341,7 +313,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -357,19 +328,7 @@
                             <!-- Replace main artifact: no classifier, attach=false -->
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <finalName>Snowman</finalName>
-                            <createDependencyReducedPom>true</createDependencyReducedPom>
-                            <!-- Do not minimize to avoid stripping required Jetty classes like ShutdownThread -->
-                            <minimizeJar>false</minimizeJar>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <!-- Merge META-INF/services -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
@@ -389,7 +348,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -399,40 +357,52 @@
                     <skip>${liquibase.skip}</skip>
                 </configuration>
             </plugin>
-
         </plugins>
-    </build>
-
-<profiles>
-    <profile>
-        <id>with-liquibase</id>
-        <activation>
-            <activeByDefault>false</activeByDefault>
-        </activation>
-        <properties>
-            <liquibase.skip>false</liquibase.skip>
-        </properties>
-        <build>
+        <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.liquibase</groupId>
-                    <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.0.5</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
                     <configuration>
-                        <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+                        <archive>
+                            <manifest>
+                                <mainClass>com.mycompany.entapp.snowman.EnterpriseApplication</mainClass>
+                            </manifest>
+                        </archive>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <phase>process-resources</phase>
-                            <goals>
-                                <goal>update</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
-        </build>
-    </profile>
-</profiles>
+        </pluginManagement>
+    </build>
 
+    <!-- Optional profile to run Liquibase when explicitly requested. -->
+    <profiles>
+        <profile>
+            <id>with-liquibase</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.0.5</version>
+                        <configuration>
+                            <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>update</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

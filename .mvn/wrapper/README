@@ -1,0 +1,8 @@
+This directory contains Maven Wrapper configuration. The wrapper is configured to use:
+- Maven Wrapper: 3.2.0
+- Apache Maven distribution: 3.9.6
+
+Files:
+- maven-wrapper.properties: pins the Maven distribution and wrapper jar locations
+
+The wrapper JAR is downloaded automatically on first use by mvnw/mvnw.cmd (via curl or wget).

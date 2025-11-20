@@ -13,6 +13,11 @@
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/domain/service/impl/EmployeeServiceImplUTest.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/infrastructure/rest/mappers/ProjectResourceMapperUTest.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/infrastructure/rest/endpoint/AppInfoRestEndpointUTest.java
+<<<<<<< HEAD
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/domain/repository/impl/ApplicationInfoRepositoryImplUTest.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/domain/service/impl/ProjectServiceImplUTest.java
+=======
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/domain/service/impl/ProjectServiceImplUTest.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/domain/repository/impl/ApplicationInfoRepositoryImplUTest.java
+>>>>>>> cga-cm42bfd598
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/test/java/com/mycompany/entapp/snowman/domain/repository/impl/ProjectRepositoryImplUTest.java

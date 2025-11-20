@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 23, "knowledge_revision": 135, "git_revision": "fd77fbcf457969902c6bffd2f426c04464b4591a", "hash": "43a75248fbe98dcfb6eb032964b3c214", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "src/main/resources/db/liquibase-changelog-schema.xml", "revision_history": [{"135": "fd77fbcf457969902c6bffd2f426c04464b4591a"}]}
+=======
+{"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 21, "knowledge_revision": 147, "git_revision": "fd77fbcf457969902c6bffd2f426c04464b4591a", "hash": "43a75248fbe98dcfb6eb032964b3c214", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "src/main/resources/db/liquibase-changelog-schema.xml", "revision_history": [{"147": "fd77fbcf457969902c6bffd2f426c04464b4591a"}]}
+>>>>>>> cga-cm42bfd598

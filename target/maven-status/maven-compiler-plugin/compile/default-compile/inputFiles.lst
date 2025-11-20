@@ -32,8 +32,13 @@
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/endpoint/UserRestEndpoint.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/ClientDao.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/dto/ClientDTO.java
+<<<<<<< HEAD
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/adapter/InvoiceSystemAdapter.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/resources/UserResource.java
+=======
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/resources/UserResource.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/adapter/InvoiceSystemAdapter.java
+>>>>>>> cga-cm42bfd598
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/model/Employee.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/repository/impl/ApplicationInfoRepositoryImpl.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/service/impl/ProjectServiceImpl.java
@@ -44,6 +49,7 @@
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/resources/ProjectResource.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/exception/BusinessException.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/endpoint/AppInfoRestEndpoint.java
+<<<<<<< HEAD
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/repository/ProjectRepository.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/service/ProjectService.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/model/EmployeeProjectId.java
@@ -64,6 +70,28 @@
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/endpoint/EmployeeRestEndpoint.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/cache/ClientCachePort.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/exception/SnowmanException.java
+=======
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/service/ProjectService.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/repository/ProjectRepository.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/model/EmployeeProjectId.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/repository/EmployeeRepository.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/model/Project.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/service/ApplicationInfoService.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/application/cache/impl/ClientCacheServiceImpl.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/application/cache/ClientCacheService.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/endpoint/ClientRestEndpoint.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/converter/ClientDTOConverter.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/mappers/EmployeeResourceMapper.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/health/DBHealthCheck.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/NotificationPort.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ClientDaoImpl.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/InvoiceSystemPort.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/endpoint/EmployeeRestEndpoint.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/rest/resources/EmployeeResource.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/cache/ClientCachePort.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/exception/SnowmanException.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/application/schedule/ReportingSnapshotTask.java
+>>>>>>> cga-cm42bfd598
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/UserDao.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ProjectDaoImpl.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/model/AppInfo.java
@@ -78,7 +106,12 @@
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/service/UserService.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/impl/UserDaoImpl.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/management/HealthCheckRestEndpoint.java
+<<<<<<< HEAD
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/management/CacheManagementRestEndpoint.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/ApplicationInfoDao.java
+=======
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/db/dao/ApplicationInfoDao.java
+/home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/management/CacheManagementRestEndpoint.java
+>>>>>>> cga-cm42bfd598
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/infrastructure/messaging/adapter/PayrollSystemAdapter.java
 /home/kavia/workspace/code-generation/monolith-enterprise-application-171998/src/main/java/com/mycompany/entapp/snowman/domain/service/ClientService.java

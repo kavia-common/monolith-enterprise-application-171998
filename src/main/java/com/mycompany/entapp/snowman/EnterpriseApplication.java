@@ -8,11 +8,18 @@ package com.mycompany.entapp.snowman;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+<<<<<<< HEAD
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+=======
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.WebAppContext;
+
+import java.net.URL;
+>>>>>>> cga-cm42bfd598
 
 /**
  * EnterpriseApplication boots an embedded Jetty as a REST-only service using Spring MVC.
@@ -70,7 +77,19 @@ public class EnterpriseApplication {
         servletHolder.setInitOrder(1);
         context.addServlet(servletHolder, "/");
 
+<<<<<<< HEAD
         server.setHandler(context);
+=======
+        WebAppContext webAppContext = new WebAppContext();
+        // Set descriptor and base resource using Jetty Resource API for compatibility
+        webAppContext.setDescriptor(getResourceFilePath("webapp/WEB-INF/web.xml"));
+        Resource base = Resource.newResource(getResourceFilePath("webapp"));
+        webAppContext.setBaseResource(base);
+        webAppContext.setContextPath("/");
+        webAppContext.setParentLoaderPriority(true);
+
+        server.setHandler(webAppContext);
+>>>>>>> cga-cm42bfd598
         server.start();
 
         // Clean shutdown
@@ -86,6 +105,15 @@ public class EnterpriseApplication {
         }));
 
         server.join();
+    }
+
+    private static String getResourceFilePath(String resourceName) {
+        URL resourceURL = EnterpriseApplication.class.getClassLoader().getResource(resourceName);
+        if (resourceURL == null) {
+            throw new RuntimeException("Unable to fetch specified resource: " + resourceName);
+        }
+        // URL#getFile provides a decoded filesystem path suitable for Jetty resource resolution
+        return resourceURL.getFile();
     }
 
     private static int resolvePort() {

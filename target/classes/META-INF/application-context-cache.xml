@@ -8,8 +8,12 @@
     <cache:annotation-driven/>
 
     <bean id="ehcacheManagerFactoryBean" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+<<<<<<< HEAD
         <!-- Load Ehcache config from classpath to avoid dependency on WEB-INF -->
         <property name="configLocation" value="classpath:/webapp/WEB-INF/ehcache.xml"/>
+=======
+        <property name="configLocation" value="/WEB-INF/ehcache.xml"/>
+>>>>>>> cga-cm42bfd598
         <property name="shared" value="true"/>
     </bean>
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">

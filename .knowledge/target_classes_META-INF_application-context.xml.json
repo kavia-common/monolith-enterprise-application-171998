@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 130, "knowledge_revision": 324, "git_revision": "94310b7d37e754e8f01b290fbc258fb9805a5f70", "hash": "f3942e99570268308442dd9ba39454cf", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "target/classes/META-INF/application-context.xml", "revision_history": [{"324": "94310b7d37e754e8f01b290fbc258fb9805a5f70"}]}
+=======
+{"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 140, "knowledge_revision": 306, "git_revision": "7f16b551a103be6374bfafd9ea8e6b2414c3bfe4", "hash": "f3942e99570268308442dd9ba39454cf", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "target/classes/META-INF/application-context.xml", "revision_history": [{"306": "7f16b551a103be6374bfafd9ea8e6b2414c3bfe4"}]}
+>>>>>>> cga-cm42bfd598

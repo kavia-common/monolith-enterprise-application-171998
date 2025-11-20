@@ -31,8 +31,13 @@ com/mycompany/entapp/snowman/domain/service/impl/EmployeeServiceImpl.class
 com/mycompany/entapp/snowman/infrastructure/messaging/adapter/InvoiceSystemAdapter.class
 com/mycompany/entapp/snowman/domain/repository/impl/ProjectRepositoryImpl.class
 com/mycompany/entapp/snowman/domain/repository/EmployeeRepository.class
+<<<<<<< HEAD
 com/mycompany/entapp/snowman/application/cache/ClientCacheService.class
 com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ClientDaoImpl.class
+=======
+com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ClientDaoImpl.class
+com/mycompany/entapp/snowman/application/cache/ClientCacheService.class
+>>>>>>> cga-cm42bfd598
 com/mycompany/entapp/snowman/infrastructure/messaging/dto/ProjectDTO.class
 com/mycompany/entapp/snowman/domain/service/ClientService.class
 com/mycompany/entapp/snowman/infrastructure/rest/endpoint/AppInfoRestEndpoint.class
@@ -48,9 +53,15 @@ com/mycompany/entapp/snowman/infrastructure/messaging/converter/EmployeeDTOConve
 com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ApplicationInfoDaoImpl.class
 com/mycompany/entapp/snowman/infrastructure/management/resource/StatusResource.class
 com/mycompany/entapp/snowman/domain/model/EmployeeProjectV2.class
+<<<<<<< HEAD
 com/mycompany/entapp/snowman/application/healthcheck/HealthStatus.class
 com/mycompany/entapp/snowman/infrastructure/cache/ClientCachePort.class
 com/mycompany/entapp/snowman/domain/service/ProjectService.class
+=======
+com/mycompany/entapp/snowman/infrastructure/cache/ClientCachePort.class
+com/mycompany/entapp/snowman/domain/service/ProjectService.class
+com/mycompany/entapp/snowman/application/healthcheck/HealthStatus.class
+>>>>>>> cga-cm42bfd598
 com/mycompany/entapp/snowman/infrastructure/db/dao/UserDao.class
 com/mycompany/entapp/snowman/domain/repository/impl/ApplicationInfoRepositoryImpl.class
 com/mycompany/entapp/snowman/domain/model/Project.class
@@ -66,6 +77,7 @@ com/mycompany/entapp/snowman/domain/model/User.class
 com/mycompany/entapp/snowman/domain/repository/ApplicationInfoRepository.class
 com/mycompany/entapp/snowman/infrastructure/rest/mappers/EmployeeResourceMapper.class
 com/mycompany/entapp/snowman/domain/model/Client.class
+<<<<<<< HEAD
 com/mycompany/entapp/snowman/application/schedule/service/impl/ReportingServiceImpl.class
 com/mycompany/entapp/snowman/infrastructure/messaging/adapter/NotificationAdapter.class
 com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ProjectDaoImpl.class
@@ -83,6 +95,26 @@ com/mycompany/entapp/snowman/infrastructure/rest/resources/ProjectResource.class
 com/mycompany/entapp/snowman/infrastructure/cache/impl/ClientCacheAdapter.class
 com/mycompany/entapp/snowman/domain/model/Employee.class
 com/mycompany/entapp/snowman/domain/exception/SnowmanException.class
+=======
+com/mycompany/entapp/snowman/infrastructure/db/dao/impl/ProjectDaoImpl.class
+com/mycompany/entapp/snowman/infrastructure/messaging/adapter/NotificationAdapter.class
+com/mycompany/entapp/snowman/application/schedule/service/impl/ReportingServiceImpl.class
+com/mycompany/entapp/snowman/domain/model/EmployeeRole.class
+com/mycompany/entapp/snowman/domain/service/impl/ApplicationInfoServiceImpl.class
+com/mycompany/entapp/snowman/domain/repository/ClientRepository.class
+com/mycompany/entapp/snowman/infrastructure/rest/mappers/UserResourceMapper.class
+com/mycompany/entapp/snowman/infrastructure/rest/mappers/AppInfoResourceMapper.class
+com/mycompany/entapp/snowman/infrastructure/messaging/converter/ClientDTOConverter.class
+com/mycompany/entapp/snowman/domain/service/impl/UserServiceImpl.class
+com/mycompany/entapp/snowman/application/schedule/ReportingData.class
+com/mycompany/entapp/snowman/infrastructure/messaging/dto/EmployeeDTO.class
+com/mycompany/entapp/snowman/infrastructure/rest/resources/AppInfoResource.class
+com/mycompany/entapp/snowman/infrastructure/rest/resources/ProjectResource.class
+com/mycompany/entapp/snowman/EnterpriseApplication$1.class
+com/mycompany/entapp/snowman/infrastructure/cache/impl/ClientCacheAdapter.class
+com/mycompany/entapp/snowman/domain/exception/SnowmanException.class
+com/mycompany/entapp/snowman/domain/model/Employee.class
+>>>>>>> cga-cm42bfd598
 com/mycompany/entapp/snowman/infrastructure/db/dao/ClientDao.class
 com/mycompany/entapp/snowman/infrastructure/db/health/DBHealthCheck.class
 com/mycompany/entapp/snowman/infrastructure/db/dao/EmployeeDao.class

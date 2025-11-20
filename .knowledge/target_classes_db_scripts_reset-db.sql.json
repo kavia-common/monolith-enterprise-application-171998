@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 138, "knowledge_revision": 331, "git_revision": "94310b7d37e754e8f01b290fbc258fb9805a5f70", "hash": "673d5b5c8d9ab2fc25a002f534021415", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "target/classes/db/scripts/reset-db.sql", "revision_history": [{"331": "94310b7d37e754e8f01b290fbc258fb9805a5f70"}]}
+=======
+{"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 135, "knowledge_revision": 300, "git_revision": "7f16b551a103be6374bfafd9ea8e6b2414c3bfe4", "hash": "673d5b5c8d9ab2fc25a002f534021415", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "target/classes/db/scripts/reset-db.sql", "revision_history": [{"300": "7f16b551a103be6374bfafd9ea8e6b2414c3bfe4"}]}
+>>>>>>> cga-cm42bfd598

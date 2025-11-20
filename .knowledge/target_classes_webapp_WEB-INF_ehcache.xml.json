@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 125, "knowledge_revision": 316, "git_revision": "94310b7d37e754e8f01b290fbc258fb9805a5f70", "hash": "385bca3be3d385125747f08a8b238f3b", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "target/classes/webapp/WEB-INF/ehcache.xml", "revision_history": [{"316": "94310b7d37e754e8f01b290fbc258fb9805a5f70"}]}
+=======
+{"is_source_file": false, "format": "", "description": "", "external_files": [], "external_methods": [], "published": [], "classes": [], "methods": [], "calls": [], "search-terms": [], "state": 2, "file_id": 144, "knowledge_revision": 309, "git_revision": "7f16b551a103be6374bfafd9ea8e6b2414c3bfe4", "hash": "385bca3be3d385125747f08a8b238f3b", "format-version": 4, "code-base-name": "monolith-enterprise-application-171998", "filename": "target/classes/webapp/WEB-INF/ehcache.xml", "revision_history": [{"309": "7f16b551a103be6374bfafd9ea8e6b2414c3bfe4"}]}
+>>>>>>> cga-cm42bfd598
