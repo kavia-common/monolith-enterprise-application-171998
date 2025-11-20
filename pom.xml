@@ -12,8 +12,8 @@
         <spring.version>5.3.30</spring.version>
         <junit.version>4.13.1</junit.version>
         <java.version>17</java.version>
-        <mockito.version>1.10.19</mockito.version>
-        <powermock.version>1.7.3</powermock.version>
+        <mockito.version>4.11.0</mockito.version>
+        <powermock.version>2.0.9</powermock.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
         <jaxrs.version>2.0</jaxrs.version>
         <bean.validation.version>2.0.0.Final</bean.validation.version>
@@ -37,7 +37,7 @@
     </properties>
 
     <dependencies>
-        <!-- [dependencies unchanged] -->
+        <!-- Common application dependencies (unchanged) -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
@@ -94,16 +94,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- Use up-to-date Mockito and PowerMock dependencies compatible with Java 17+ -->
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -112,6 +107,13 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Remove legacy mockito-all, powermock-api-mockito dependencies. -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -263,7 +265,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
