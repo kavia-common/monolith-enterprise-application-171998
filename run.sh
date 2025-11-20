@@ -57,5 +57,5 @@ else
 fi
 
 echo "Starting Snowman using: ${JAR_TO_RUN} on port ${PORT}"
-# Use -Dserver.port for Spring Boot / embedded server. Also pass legacy -Dport if read by custom code.
+# Use -Dserver.port for embedded server (highest precedence), also pass legacy -Dport; application falls back to PORT env or 3001 default.
 exec java -jar -Dserver.port="${PORT}" -Dport="${PORT}" "${JAR_TO_RUN}"

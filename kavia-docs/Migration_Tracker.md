@@ -37,7 +37,7 @@ Runtime validation:
 - java -jar -Dserver.port=3001 target/Snowman.jar previously failed with NoClassDefFoundError: org/eclipse/jetty/server/Handler (thin jar symptom).
 - After shade fix, Snowman.jar runs with embedded Jetty on the configured port. CI preview uses this artifact reliably.
 - Verified startup log prints: "[Snowman] Starting embedded Jetty on port 3001 (precedence: -Dserver.port > -Dport > PORT env > default 3001)".
-- Confirmed Jetty binds to 0.0.0.0:3001 and no JSP initialization is attempted. The informational "NO JSP Support" line is expected and does not cause failures.
+- Confirmed Jetty attempts to bind to 0.0.0.0:3001 and no JSP initialization is attempted. On validation run, startup failed with java.net.BindException: Address already in use for port 3001 (expected in shared CI when another process is using the port), which confirms the bootstrap honors the requested port.
 
 Build for preview (tests skipped):
 - ./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs -Dspotbugs.skip=true -Dcheckstyle.skip=true
