@@ -1,46 +1,54 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-JAR_PATH="target/Snowman.jar"
+# Preferred primary jar path
+JAR_PRIMARY="target/Snowman.jar"
+# Fallback: any shaded fat jar
+JAR_SHADED=$(ls -1 target/*-shaded.jar 2>/dev/null | head -n1 || true)
 
-echo "Listing target directory (if exists) before start:"
+echo "Listing target directory (if exists):"
 ls -la target || true
 
-# Guard: If the executable JAR is missing, build it first with Maven Wrapper (preferred) or system Maven.
-if [ ! -f "$JAR_PATH" ]; then
-  echo "Executable jar not found at $JAR_PATH"
+# If neither exists yet, attempt a quick build with tests fully skipped
+choose_jar() {
+  if [ -f "$JAR_PRIMARY" ]; then
+    echo "$JAR_PRIMARY"
+    return 0
+  fi
+  if [ -n "${JAR_SHADED:-}" ] && [ -f "$JAR_SHADED" ]; then
+    echo "$JAR_SHADED"
+    return 0
+  fi
+  return 1
+}
+
+JAR_TO_RUN=""
+if ! JAR_TO_RUN="$(choose_jar)"; then
+  echo "No runnable JAR found. Attempting to build with Maven (tests skipped)..."
   MVN_CMD="./mvnw"; [ -x "./mvnw" ] || MVN_CMD="$(command -v mvn || true)"
-  if [ -n "${MVN_CMD}" ]; then
-    echo "Attempting to build the project with Maven (${MVN_CMD})..."
-    if [ "${SKIP_TESTS:-1}" = "1" ]; then
-      "${MVN_CMD}" -q -DskipTests package --batch-mode --errors --fail-at-end
+  if [ -z "${MVN_CMD}" ]; then
+    echo "ERROR: Maven not available. Please ensure ./mvnw is executable or mvn is installed."
+    exit 1
+  fi
+  "${MVN_CMD}" -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs --batch-mode --errors --fail-at-end
+  echo "Re-listing target after build:"
+  ls -la target || true
+  # Re-evaluate candidates after build
+  JAR_SHADED=$(ls -1 target/*-shaded.jar 2>/dev/null | head -n1 || true)
+  if ! JAR_TO_RUN="$(choose_jar)"; then
+    # As a last resort, pick the first jar in target
+    ALT_JAR="$(ls -1 target/*.jar 2>/dev/null | head -n1 || true)"
+    if [ -n "${ALT_JAR}" ]; then
+      JAR_TO_RUN="${ALT_JAR}"
+      echo "Falling back to discovered JAR: ${JAR_TO_RUN}"
     else
-      "${MVN_CMD}" -q package --batch-mode --errors --fail-at-end
+      echo "ERROR: Build did not produce any JAR in target/. Please inspect pom.xml and build logs."
+      exit 1
     fi
-  else
-    echo "ERROR: Neither Maven Wrapper (./mvnw) nor system Maven (mvn) is available."
-    echo "Please ensure the Maven Wrapper is executable or install Maven, then run: ./mvnw -DskipTests package --batch-mode --errors --fail-at-end"
-    exit 1
   fi
 fi
 
-echo "Listing target directory after build attempt:"
-ls -la target || true
-
-# After build attempt, verify the jar exists; if not, try to discover the actual jar and use it.
-if [ ! -f "$JAR_PATH" ]; then
-  echo "WARNING: Expected $JAR_PATH not found. Discovering built jars in target/..."
-  ALT_JAR="$(ls -1 target/*.jar 2>/dev/null | head -n1 || true)"
-  if [ -n "${ALT_JAR}" ]; then
-    echo "Using discovered jar: ${ALT_JAR}"
-    JAR_PATH="${ALT_JAR}"
-  else
-    echo "ERROR: Build did not produce any jar in target/. Please check build logs and pom.xml configuration." >&2
-    exit 1
-  fi
-fi
-
-# Determine port: prefer CLI arg, then PORT env, else default 3001 for preview
+# Determine port: CLI arg > PORT env > default 3001
 PORT_ARG="${1:-}"
 if [[ -n "$PORT_ARG" ]]; then
   PORT="$PORT_ARG"
@@ -48,6 +56,6 @@ else
   PORT="${PORT:-3001}"
 fi
 
-echo "Starting Snowman from '${JAR_PATH}' on port ${PORT}..."
-# Use -Dserver.port for Spring/Jetty and keep legacy -Dport for any custom reads.
-exec java -Dport="${PORT}" -Dserver.port="${PORT}" -jar "${JAR_PATH}"
+echo "Starting Snowman using: ${JAR_TO_RUN} on port ${PORT}"
+# Use -Dserver.port for Spring Boot / embedded server. Also pass legacy -Dport if read by custom code.
+exec java -jar -Dserver.port="${PORT}" -Dport="${PORT}" "${JAR_TO_RUN}"
