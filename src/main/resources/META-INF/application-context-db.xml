@@ -3,10 +3,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!-- Enable/disable DB layer via property: db.enabled -->
+    <!-- When db.enabled=false (default), none of these beans are created, allowing app to start without a live DB -->
 
     <!-- for ORM (JPA: Hibernate)-->
     <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+          depends-on="dataSource">
         <property name="dataSource" ref="dataSource" />
         <property name="packagesToScan" value="com.mycompany.entapp.snowman.domain.model" />
         <property name="hibernateProperties">
@@ -18,16 +21,19 @@
     </bean>
 
     <bean id="dataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${jdbc.driverClassName}" />
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          p:driverClassName="${jdbc.driverClassName}"
+          p:url="${jdbc.url}"
+          p:username="${jdbc.username}"
+          p:password="${jdbc.password}"
+          >
+        <meta key="org.springframework.beans.factory.annotation" value="conditional"/>
+        <description>DataSource bean is conditionally created via factory-method below</description>
     </bean>
 
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory" />
+    <!-- Conditional bean creation via factory-method and SpEL condition -->
+    <bean id="dbConfigToggle" class="java.lang.Boolean">
+        <constructor-arg value="#{T(java.lang.Boolean).valueOf('${db.enabled:true}')}" />
     </bean>
 
     <bean id="persistenceExceptionTranslationPostProcessor"
