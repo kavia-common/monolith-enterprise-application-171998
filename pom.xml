@@ -238,32 +238,42 @@
     <build>
         <finalName>Snowman</finalName>
         <plugins>
+            <!-- Ensure resources are copied safely and included in the jar without filtering.
+                 We explicitly include the webapp directory in the jar so Jetty can resolve
+                 WEB-INF/web.xml and related assets off the classpath. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
                 <configuration>
-                    <release>${java.version}</release>
+                    <!-- Disable filtering globally to avoid treating XML files as templates -->
                     <encoding>UTF-8</encoding>
-                    <compilerArgs>
-                        <arg>-Xlint:deprecation</arg>
-                        <arg>-Xlint:unchecked</arg>
-                    </compilerArgs>
+                    <useDefaultDelimiters>true</useDefaultDelimiters>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>xml</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>json</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>properties</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                    <resources>
+                        <resource>
+                            <directory>src/main/resources</directory>
+                            <filtering>false</filtering>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </resource>
+                        <!-- Explicitly include webapp resources on the classpath -->
+                        <resource>
+                            <directory>src/main/resources/webapp</directory>
+                            <filtering>false</filtering>
+                            <!-- Place under webapp/ in classes so classloader resource lookup matches -->
+                            <targetPath>webapp</targetPath>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </resource>
+                    </resources>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>compile-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <testIncludes>
-                                <testInclude>**/*ITest.java</testInclude>
-                            </testIncludes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
