@@ -38,6 +38,16 @@ public class ApplicationInfoRepositoryImpl implements ApplicationInfoRepository,
         }
     }
 
+    /**
+     * PUBLIC_INTERFACE
+     * Convenience method for tests to initialize repository state without relying on Spring lifecycle.
+     * Delegates to afterPropertiesSet() to load AppInfo data from the DAO.
+     */
+    public void initialize() {
+        // Delegate to InitializingBean hook to avoid duplication
+        afterPropertiesSet();
+    }
+
     @Override
     public Map<Integer, AppInfo> getAppInfoMap() {
         return appInfoMap;
