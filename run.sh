@@ -34,4 +34,5 @@ else
 fi
 
 echo "Starting Snowman on port ${PORT}..."
+# Use -Dserver.port for Spring/Jetty and keep legacy -Dport for any custom reads.
 exec java -Dport="${PORT}" -Dserver.port="${PORT}" -jar "$JAR_PATH"

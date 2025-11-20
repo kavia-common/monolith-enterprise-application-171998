@@ -11,7 +11,7 @@
     <properties>
         <spring.version>[4.3.18,)</spring.version>
         <junit.version>4.13.1</junit.version>
-        <java.version>1.7</java.version>
+        <java.version>17</java.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.7.3</powermock.version>
         <jetty.version>[9.4.11.v20180605,)</jetty.version>
@@ -210,9 +210,10 @@
         </dependency>
         <!-- Ensure classic JMS API is available (code imports javax.jms.* not jakarta.jms.*) -->
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>jms</artifactId>
-            <version>1.1</version>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
         </dependency>
         <!-- ActiveMQ client to provide JMS implementation classes used in Spring templates -->
         <dependency>
@@ -238,10 +239,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
+                    <encoding>UTF-8</encoding>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
                 </configuration>
                 <executions>
                     <execution>
@@ -262,7 +267,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -293,6 +298,22 @@
             <!-- Liquibase should not run during normal CI packaging since it requires a live DB. -->
             <!-- We move Liquibase execution to an optional profile below. -->
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <mainClass>com.mycompany.entapp.snowman.EnterpriseApplication</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <!-- Optional profile to run Liquibase when explicitly requested. -->
