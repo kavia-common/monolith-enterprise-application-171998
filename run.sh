@@ -7,14 +7,14 @@ JAR_PATH="target/Snowman.jar"
 if [ ! -f "$JAR_PATH" ]; then
   echo "Executable jar not found at $JAR_PATH"
   if [ -x "./mvnw" ]; then
-    echo "Attempting to build the project with Maven Wrapper..."
-    ./mvnw -DskipTests package
+    echo "Attempting to build the project with Maven Wrapper (full output, batch mode, errors)..."
+    ./mvnw clean install --batch-mode --errors --fail-at-end
   elif command -v mvn >/dev/null 2>&1; then
-    echo "Maven Wrapper not found. Attempting to build the project with system Maven..."
-    mvn -DskipTests package
+    echo "Maven Wrapper not found. Attempting to build the project with system Maven (full output, batch mode, errors)..."
+    mvn clean install --batch-mode --errors --fail-at-end
   else
     echo "ERROR: Neither Maven Wrapper (./mvnw) nor system Maven (mvn) is available."
-    echo "Please ensure the Maven Wrapper is executable or install Maven, then run: ./mvnw -DskipTests package"
+    echo "Please ensure the Maven Wrapper is executable or install Maven, then run: ./mvnw clean install --batch-mode --errors --fail-at-end"
     exit 1
   fi
 fi
