@@ -2,6 +2,27 @@
 
 Last updated: 2025-11-20
 
+2025-11-20 — Finalize Java 21 migration settings and packaging
+- Maven Compiler uses release=21; surefire/failsafe configured with useModulePath=false to support legacy tests.
+- Verified SLF4J/Logback compatibility: using slf4j-api 1.7.36 and logback 1.2.13, which are stable with JDK 21 for classic binding; consider future upgrade to slf4j 2.x + logback 1.4.x with Spring 6 path.
+- Confirmed MySQL Connector/J 8+ via com.mysql:mysql-connector-j:${mysql.version}; application.properties and direct JDBC use com.mysql.cj.jdbc.Driver.
+- Jetty dependencies aligned on 9.4.x (javax.servlet) and fully shaded into Snowman.jar with:
+  - ServicesResourceTransformer, ManifestResourceTransformer
+  - createDependencyReducedPom=false
+  - minimizeJar=false
+  - Shaded artifact name enforced as target/Snowman.jar
+- Build command: ./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs
+- Artifact location: target/Snowman.jar
+
+Compatibility notes:
+- Current stack remains on Spring 5.x + javax.* APIs + Jetty 9.4.x; compatible to run on Java 21 with correct shading and legacy API dependencies.
+- For future modernization, plan a path to Spring 6.x (Jakarta), Jetty 11 (jakarta.servlet), slf4j 2.x, and logback 1.4.x/1.5.x.
+
+Remaining tasks:
+- Optional: introduce maven-toolchains-plugin when JDK 21 toolchain is available in CI.
+- Optional: full test matrix on JDK 21 and removal of argLine opens, once reflection issues are resolved.
+- Optional: investigate upgrading Hibernate/JPA and JMS stacks to jakarta.* alongside Spring 6.
+
 2025-11-20 — Maven Java 21 release, plugins aligned
 - Set maven.compiler.release=21 (compile target) while allowing runtime on Java 17 if toolchain JDK 21 is unavailable.
 - Kept <java.version>21</java.version> to document intended target.
