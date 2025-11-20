@@ -14,6 +14,20 @@ import java.net.URL;
 
 public class EnterpriseApplication {
 
+    // PUBLIC_INTERFACE
+    /**
+     * Application entrypoint. Bootstraps an embedded Jetty server and deploys the bundled webapp found under
+     * classpath:/webapp using web.xml for the servlet configuration.
+     *
+     * System properties:
+     * -Dport=<int>    Optional. The TCP port that Jetty should listen on. Defaults to 8090 if not provided.
+     *
+     * To run:
+     *   java -jar target/Snowman.jar
+     * or with a custom port:
+     *   java -jar -Dport=3001 target/Snowman.jar
+     */
+
     private static final int DEFAULT_PORT = 8090;
 
     private EnterpriseApplication() {
@@ -58,6 +72,14 @@ public class EnterpriseApplication {
 
     }
 
+    // PUBLIC_INTERFACE
+    /**
+     * Resolve a classpath resource to a filesystem path string for Jetty configuration.
+     *
+     * @param resourceName the path to the resource relative to the classpath root (e.g., "webapp/WEB-INF/web.xml")
+     * @return a filesystem path to the resource
+     * @throws RuntimeException if the resource cannot be found
+     */
     private static String getResource(String resourceName) {
         URL resourceURL = EnterpriseApplication.class.getClassLoader().getResource(resourceName);
         if (resourceURL == null) {

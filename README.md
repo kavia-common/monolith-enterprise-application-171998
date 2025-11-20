@@ -154,6 +154,9 @@ You can do this manually like:
 
 ```java
 java -jar -Dport=[port number] target/Snowman.jar
+
+Note: Use the 'port' system property (not 'server.port') when running the shaded JAR, e.g.:
+java -jar -Dport=3001 target/Snowman.jar
 ```
 
 where port number is an unused port

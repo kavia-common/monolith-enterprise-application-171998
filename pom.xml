@@ -40,7 +40,8 @@
         <!-- Add javax annotation api for PostConstruct used by codebase -->
         <javax.annotation.version>1.3.2</javax.annotation.version>
         <!-- javax JMS API for compatibility with Spring 4.x and ActiveMQ 5.x -->
-        <javax.jms.version>1.1</javax.jms.version>
+        <!-- Geronimo JMS 1.1 spec artifact version that exists in Maven Central -->
+        <javax.jms.version>1.1.1</javax.jms.version>
         <!-- javax Servlet API to align with Jetty 9.4 (javax namespace) -->
         <javax.servlet.api.version>3.1.0</javax.servlet.api.version>
     </properties>
@@ -251,10 +252,11 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- javax JMS API (Spring 4 / ActiveMQ 5.x expect javax.jms) -->
+        <!-- javax JMS API (Spring 4 / ActiveMQ 5.x expect javax.jms)
+             Note: javax.jms:javax.jms-api:1.1 is not present in Maven Central; use geronimo-jms_1.1_spec which provides javax.jms 1.1 API. -->
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
             <version>${javax.jms.version}</version>
         </dependency>
 
