@@ -6,6 +6,8 @@ set -euo pipefail
 # - target/Snowman.jar (runnable uber JAR)
 # - target/original-Snowman.jar (original before shading)
 # - target/enterprise-application-1.0-SNAPSHOT.jar (non-uber)
+# Usage: ./run.sh
+# Optional: PORT=3001 ./run.sh  (maps to -Dport=3001)
 JAR_PATH="target/Snowman.jar"
 
 if [ ! -f "$JAR_PATH" ]; then

@@ -25,7 +25,7 @@ public class EnterpriseApplication {
      * To run:
      *   java -jar target/Snowman.jar
      * or with a custom port:
-     *   java -jar -Dport=3001 target/Snowman.jar
+     *   java -Dport=3001 -jar target/Snowman.jar
      */
 
     private static final int DEFAULT_PORT = 8090;
