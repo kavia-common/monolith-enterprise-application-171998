@@ -17,6 +17,10 @@ Build commands:
 - With system Maven:
   `mvn -q -DskipTests package`
 
+If unit tests in this environment fail to compile (e.g., legacy Mockito imports), force packaging by skipping test compilation entirely:
+- `./mvnw -q -DskipTests=true -DskipITs -Dmaven.test.skip=true package`
+This will still produce the executable fat JAR at `target/Snowman.jar`.
+
 Run command (as used by `run.sh`):
 - `./run.sh 3001` (lists target/, builds if missing, and starts the discovered jar; prefers target/Snowman.jar)
 - Direct Java (if you already have the jar): `java -Dport=3001 -Dserver.port=3001 -jar target/Snowman.jar`
