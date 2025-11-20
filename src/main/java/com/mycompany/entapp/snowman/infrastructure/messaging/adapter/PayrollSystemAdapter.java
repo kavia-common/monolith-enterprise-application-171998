@@ -38,7 +38,7 @@ public class PayrollSystemAdapter implements PayrollSystemPort {
         // Flatten the Object here - external Payroll system does not expect an Object
         jmsTemplate.convertAndSend(employeeDTO, new MessagePostProcessor() {
             @Override
-            public javax.jms.Message postProcessMessage(javax.jms.Message message) throws JMSException {
+            public Message postProcessMessage(Message message) throws JMSException {
                 message.setJMSCorrelationID("EmployeeId-" + employeeDTO.getId());
 
                 // Don't care if external system doesn't get message

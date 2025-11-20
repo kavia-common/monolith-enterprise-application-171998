@@ -35,7 +35,7 @@ public class InvoiceSystemAdapter implements InvoiceSystemPort {
         jmsTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
-                javax.jms.ObjectMessage objectMessage = session.createObjectMessage(clientDTO);
+                ObjectMessage objectMessage = session.createObjectMessage(clientDTO);
                 // EIP - correlate at the other end
                 objectMessage.setJMSCorrelationID("ClientID-" + clientDTO.getClientId());
                 return objectMessage;
