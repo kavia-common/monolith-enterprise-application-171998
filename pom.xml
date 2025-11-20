@@ -321,12 +321,13 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
+                        <id>shade-uber-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- Ensure shaded jar replaces the main artifact (no classifier) -->
+                            <!-- Replace main artifact: no classifier, attach=false -->
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <finalName>Snowman</finalName>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
@@ -340,11 +341,10 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <!-- JMS remains on javax.jms 1.1 API via dependency; no package relocation needed -->
                             <transformers>
-                                <!-- Merge service descriptors -->
+                                <!-- Merge META-INF/services -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <!-- Set main class and merge manifest -->
+                                <!-- Ensure Main-Class in MANIFEST -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.mycompany.entapp.snowman.EnterpriseApplication</mainClass>
                                 </transformer>
