@@ -16,6 +16,7 @@
 - [Caching](#caching)
 - [Uber Jar](#uber-jar)
 - [Embedded Jetty](#embedded-jetty)
+- [Build and Run](#build-and-run)
 - [Database Migration](#database-migration)
 - [Scalability](#scalability)
 - [Clustering](#clustering)
@@ -107,7 +108,8 @@ Apache ActiveMQ is JMS compliant belonging to open source apache foundation. One
 As part of the deployment process, Application is packaged up in a "uber" runnable executable jar.
 This jar contains all dependencies copied in. And can be easily run from a command line with:
 
-```java
+```bash
+./mvnw -DskipTests package
 java -jar target/Snowman.jar
 ```
 
@@ -121,6 +123,34 @@ or a Web/JSP Container (Tomcat, Jetty, UnderTow), we embed a HTTP listener into 
 
 All dependencies are bundled/packaged together in an Uber jar file so it works. This means it is therefore
 wasn't necessary required to be provided with specific JavaEE dependencies from the JavaEE platform.
+
+The embedded Jetty is configured to load its web resources from the classpath:
+- A minimal webapp is provided under `src/main/resources/webapp/` (packaged at `/webapp` in the JAR).
+- `WEB-INF/web.xml` is used as the descriptor.
+- This avoids any need for an exploded WAR or a filesystem `/webapp` directory.
+
+### <a name="build-and-run"></a>Build and Run
+
+Build:
+```bash
+./mvnw -DskipTests package
+```
+
+Run (default port 8090):
+```bash
+java -jar target/Snowman.jar
+```
+
+Override the HTTP port (either property is supported):
+```bash
+java -Dport=3001 -jar target/Snowman.jar
+# or
+java -Dserver.port=3001 -jar target/Snowman.jar
+```
+
+Notes:
+- Ensure `src/main/resources/webapp/index.html` and `src/main/resources/webapp/WEB-INF/web.xml` exist so the shaded JAR contains them.
+- The app serves static content from `/` and REST endpoints under their respective paths via Spring MVC.
 
 ### <a name="database-migration"></a>Database Migration
 
@@ -152,11 +182,11 @@ To support horizontal scalability you run multiple instances of the same applica
 
 You can do this manually like:
 
-```java
+```bash
 java -jar -Dport=[port number] target/Snowman.jar
 
-Note: Use the 'port' system property (not 'server.port') when running the shaded JAR, e.g.:
-java -jar -Dport=3001 target/Snowman.jar
+# Alternative property name also supported:
+java -jar -Dserver.port=[port number] target/Snowman.jar
 ```
 
 where port number is an unused port
@@ -167,7 +197,7 @@ This option is limited kind of a way. You can opt to run this application in a h
 machine. Alternatively, you can give more memory to the JVM by tuning the min and max 
 parameters like the following:
 
-```java
+```bash
 java -jar -Xms256m -Xmx2048m target/Snowman.jar
 ```
 
