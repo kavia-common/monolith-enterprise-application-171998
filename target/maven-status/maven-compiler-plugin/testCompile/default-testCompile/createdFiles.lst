@@ -13,5 +13,6 @@ com/mycompany/entapp/snowman/domain/service/impl/ClientServiceImplUTest.class
 com/mycompany/entapp/snowman/infrastructure/rest/endpoint/EmployeeRestEndpointUTest.class
 com/mycompany/entapp/snowman/infrastructure/rest/mappers/EmployeeResourceMapperUTest.class
 com/mycompany/entapp/snowman/infrastructure/rest/endpoint/AppInfoRestEndpointUTest.class
+com/mycompany/entapp/snowman/domain/repository/impl/ApplicationInfoRepositoryImplUTest.class
 com/mycompany/entapp/snowman/domain/service/impl/ProjectServiceImplUTest.class
 com/mycompany/entapp/snowman/infrastructure/rest/mappers/ClientResourceMapperUTest.class
