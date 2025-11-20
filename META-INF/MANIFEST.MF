@@ -3,4 +3,5 @@ Archiver-Version: Plexus Archiver
 Created-By: Apache Maven 3.8.8
 Built-By: kavia
 Build-Jdk: 17.0.16
+Main-Class: com.mycompany.entapp.snowman.EnterpriseApplication
 

@@ -8,10 +8,12 @@ package com.mycompany.entapp.snowman;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import java.net.URL;
-
+/**
+ * EnterpriseApplication boots an embedded Jetty and serves the webapp packaged inside the shaded JAR.
+ */
 public class EnterpriseApplication {
 
     // PUBLIC_INTERFACE
@@ -20,82 +22,67 @@ public class EnterpriseApplication {
      * classpath:/webapp using web.xml for the servlet configuration.
      *
      * System properties:
-     * -Dport=<int>    Optional. The TCP port that Jetty should listen on. Defaults to 8090 if not provided.
+     * -Dport=<int>        Optional. The TCP port that Jetty should listen on. Defaults to 8090 if not provided.
+     * -Dserver.port=<int> Optional. Alternative property name supported by the platform.
      *
      * To run:
      *   java -jar target/Snowman.jar
      * or with a custom port:
      *   java -Dport=3001 -jar target/Snowman.jar
      */
-
     private static final int DEFAULT_PORT = 8090;
 
     private EnterpriseApplication() {
+        // no-op
     }
 
     public static void main(String[] args) throws Exception {
-
         final Server server = new Server();
+        final ServerConnector connector = new ServerConnector(server);
+        connector.setPort(resolvePort());
+        server.setConnectors(new Connector[]{connector});
 
-        final ServerConnector serverConnector = new ServerConnector(server);
-
-        serverConnector.setPort(resolvePort());
-
-        server.setConnectors(new Connector[]{serverConnector});
-
+        // Configure WebAppContext to load resources from classpath so it works from shaded JAR
         WebAppContext webAppContext = new WebAppContext();
-        webAppContext.setDescriptor(getResource("webapp/WEB-INF/web.xml"));
-        // For compatibility across Jetty versions, use setWar to point to the exploded webapp directory
-        webAppContext.setWar(getResource("webapp"));
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
+
+        // Point Jetty to the web.xml within the JAR and set the resource base to classpath:/webapp
+        Resource webXml = Resource.newClassPathResource("webapp/WEB-INF/web.xml", true, false);
+        if (webXml == null || !webXml.exists()) {
+            throw new IllegalStateException("Cannot locate web.xml at classpath:/webapp/WEB-INF/web.xml");
+        }
+        webAppContext.setDescriptor(webXml.getURI().toString());
+
+        Resource webappRoot = Resource.newClassPathResource("webapp", true, false);
+        if (webappRoot == null || !webappRoot.exists()) {
+            throw new IllegalStateException("Cannot locate webapp directory at classpath:/webapp");
+        }
+        webAppContext.setBaseResource(webappRoot);
 
         server.setHandler(webAppContext);
         server.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
+        // Clean shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            server.setStopAtShutdown(true);
+            try {
                 if (server.isStarted()) {
-                    server.setStopAtShutdown(true);
-
-                    try {
-                        server.stop();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    server.stop();
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }));
 
         server.join();
-
-    }
-
-    // PUBLIC_INTERFACE
-    /**
-     * Resolve a classpath resource to a filesystem path string for Jetty configuration.
-     *
-     * @param resourceName the path to the resource relative to the classpath root (e.g., "webapp/WEB-INF/web.xml")
-     * @return a filesystem path to the resource
-     * @throws RuntimeException if the resource cannot be found
-     */
-    private static String getResource(String resourceName) {
-        URL resourceURL = EnterpriseApplication.class.getClassLoader().getResource(resourceName);
-        if (resourceURL == null) {
-            throw new RuntimeException("Unable to fetch specified resource: " + resourceName);
-        }
-        // Jetty WebAppContext#setResourceBase expects a filesystem path; use URL.getFile()
-        return resourceURL.getFile();
     }
 
     private static int resolvePort() {
-        // Compatibility: prefer -Dport, but if absent and -Dserver.port is provided (used by preview),
-        // use that value as a fallback. Defaults to 8090 if neither is provided or parsing fails.
+        // Compatibility: prefer -Dport, but if absent and -Dserver.port is provided, use that.
         String primary = System.getProperty("port");
         String fallback = System.getProperty("server.port");
         String candidate = (primary != null && !primary.isEmpty()) ? primary : fallback;
-
         if (candidate != null && !candidate.isEmpty()) {
             try {
                 return Integer.parseInt(candidate);

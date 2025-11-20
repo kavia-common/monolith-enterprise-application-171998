@@ -36,6 +36,7 @@
         <version>3.1.0</version>
         <executions>
           <execution>
+            <id>shade-uber-jar</id>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
