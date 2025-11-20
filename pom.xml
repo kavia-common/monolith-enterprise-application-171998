@@ -142,6 +142,7 @@
             <version>${apache.commons-lang3.version}</version>
         </dependency>
 
+        <!-- Jetty runtime modules: keep versions aligned and ensure they are packaged (no 'provided' scope) -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -160,7 +161,7 @@
             <version>${jetty.version}</version>
         </dependency>
 
-        <!-- Explicit util module to ensure all handler utilities are present (ShutdownThread, etc.) -->
+        <!-- Explicit util module to ensure all handler utilities are present (ShutdownThread, etc.) - not 'provided' -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
@@ -168,11 +169,13 @@
         </dependency>
 
         <!-- Ensure IO and Security modules are present at runtime -->
+        <!-- Jetty IO must match the same version as jetty-server -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-io</artifactId>
             <version>${jetty.version}</version>
         </dependency>
+        <!-- Security module (required by webapp context auth) -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>

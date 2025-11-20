@@ -68,10 +68,11 @@ public class EnterpriseApplication {
         server.start();
 
         // Clean shutdown (Java 7 compatible - avoid lambdas)
+        // Do NOT call server.setStopAtShutdown(true) here to avoid triggering Jetty ShutdownThread classloading
+        // before Jetty fully initializes in some environments; rely on our hook calling server.stop() explicitly.
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                server.setStopAtShutdown(true);
                 try {
                     if (server.isStarted()) {
                         server.stop();
