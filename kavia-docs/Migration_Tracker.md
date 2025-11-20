@@ -14,6 +14,9 @@ Build issues addressed in this change:
 - Resolution: Removed explicit webapp resource copy configuration and avoided read-only <resources> configuration in maven-resources-plugin; disabled file mode preservation scenarios by using defaults and not setting file modes. Shading still packages resources into the fat JAR.
 - Ensured shade plugin produces an executable Uber JAR named target/Snowman.jar with the correct Main-Class.
 
+Runtime validation:
+- SLF4J runtime binding added via Logback (logback-classic 1.2.13); NOP/StaticLoggerBinder warnings resolved. Application now emits logs to console under Java 21.
+
 Next steps for Java 21:
 - Upgrade toolchain to Java 21 using maven-toolchains-plugin or maven-compiler-plugin + toolchains file.
 - Audit javax.* vs jakarta.* API usage (e.g., javax.ws.rs, javax.jms). Remains on legacy javax; running on Java 21 is viable if dependencies are compatible.

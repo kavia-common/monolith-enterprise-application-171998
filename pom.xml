@@ -28,7 +28,8 @@
         <h2.version>2.1.210</h2.version>
         <derby.version>10.11.1.1</derby.version>
         <mysql.version>8.4.0</mysql.version>
-        <slf4j.api.version>1.7.25</slf4j.api.version>
+        <slf4j.api.version>1.7.36</slf4j.api.version>
+        <logback.version>1.2.13</logback.version>
         <hibernate.core.version>5.4.24.Final</hibernate.core.version>
         <hibernate.entitymanager.version>4.3.10.Final</hibernate.entitymanager.version>
         <hibernate.c3po.version>4.3.10.Final</hibernate.c3po.version>
@@ -173,6 +174,18 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.api.version}</version>
+        </dependency>
+        <!-- Runtime logging binding: Logback for SLF4J -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <!-- Optionally include logback-core explicitly (transitive of classic, but listed for clarity) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
