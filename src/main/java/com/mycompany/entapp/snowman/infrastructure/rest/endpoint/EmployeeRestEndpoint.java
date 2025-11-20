@@ -46,7 +46,7 @@ public class EmployeeRestEndpoint {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "{employeeId}/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{employeeId}/delete", method = RequestMethod.DELETE)
     public ResponseEntity deleteExistingEmployee(@PathVariable Integer employeeId){
         employeeService.deleteEmployee(employeeId);
         return ResponseEntity.ok().build();
