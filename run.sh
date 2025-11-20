@@ -16,4 +16,11 @@ if [ ! -f "$JAR_PATH" ]; then
   exit 1
 fi
 
-exec java -jar "$JAR_PATH"
+# Allow overriding port via PORT env var for convenience
+PORT_ARG=""
+if [[ "${PORT:-}" != "" ]]; then
+  PORT_ARG="-Dport=${PORT}"
+fi
+
+# Allow extra JVM options via JAVA_OPTS
+exec java ${JAVA_OPTS:-} ${PORT_ARG} -jar "$JAR_PATH"
