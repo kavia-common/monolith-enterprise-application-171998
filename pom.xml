@@ -9,7 +9,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <spring.version>[4.3.18,)</spring.version>
+        <spring.version>5.3.30</spring.version>
         <junit.version>4.13.1</junit.version>
         <java.version>17</java.version>
         <mockito.version>1.10.19</mockito.version>
