@@ -30,9 +30,8 @@ public class EnterpriseApplication {
         server.setConnectors(new Connector[]{serverConnector});
 
         WebAppContext webAppContext = new WebAppContext();
-        webAppContext.setDescriptor(getResource("webapp/WEB-INF/web.xml"));
-        // setResourceBase expects a filesystem path or external form; getResource returns URL string.
-        // Convert to an absolute filesystem path to satisfy older Jetty APIs.
+        webAppContext.setDescriptor(getResourceFilePath("webapp/WEB-INF/web.xml"));
+        // Jetty 9 expects a filesystem path for the resource base
         webAppContext.setResourceBase(getResourceFilePath("webapp"));
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
