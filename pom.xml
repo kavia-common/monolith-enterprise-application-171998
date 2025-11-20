@@ -14,7 +14,7 @@
         <java.version>17</java.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.7.3</powermock.version>
-        <jetty.version>[9.4.11.v20180605,)</jetty.version>
+        <jetty.version>9.4.48.v20220622</jetty.version>
         <jaxrs.version>2.0</jaxrs.version>
         <bean.validation.version>2.0.0.Final</bean.validation.version>
         <expression.language.version>3.0.0</expression.language.version>

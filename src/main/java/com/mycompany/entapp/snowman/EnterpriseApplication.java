@@ -8,6 +8,7 @@ package com.mycompany.entapp.snowman;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.net.URL;
@@ -30,9 +31,10 @@ public class EnterpriseApplication {
         server.setConnectors(new Connector[]{serverConnector});
 
         WebAppContext webAppContext = new WebAppContext();
+        // Set descriptor and base resource using Jetty Resource API for compatibility
         webAppContext.setDescriptor(getResourceFilePath("webapp/WEB-INF/web.xml"));
-        // Jetty 9 expects a filesystem path for the resource base
-        webAppContext.setResourceBase(getResourceFilePath("webapp"));
+        Resource base = Resource.newResource(getResourceFilePath("webapp"));
+        webAppContext.setBaseResource(base);
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
 
@@ -71,7 +73,7 @@ public class EnterpriseApplication {
         if (resourceURL == null) {
             throw new RuntimeException("Unable to fetch specified resource: " + resourceName);
         }
-        // URL#getFile provides a decoded filesystem path suitable for Jetty setResourceBase on older APIs
+        // URL#getFile provides a decoded filesystem path suitable for Jetty resource resolution
         return resourceURL.getFile();
     }
 
