@@ -10,12 +10,20 @@ Current Java level in build:
 - POM property <java.version>21</java.version> with maven-compiler-plugin (release=21).
 
 Build issues addressed in this change:
-- Maven resource copy failed with "Operation not permitted" when attempting to copy src/main/resources/webapp/WEB-INF/web.xml into target/classes with POSIX mode preservation.
-- Resolution: Removed explicit webapp resource copy configuration and avoided read-only <resources> configuration in maven-resources-plugin; disabled file mode preservation scenarios by using defaults and not setting file modes. Shading still packages resources into the fat JAR.
-- Ensured shade plugin produces an executable Uber JAR named target/Snowman.jar with the correct Main-Class.
+- Observed intermittent preview failures due to missing target/Snowman.jar. After a clean build, two artifacts existed:
+  - target/Snowman.jar (thin jar with only classes/resources; not executable due to missing dependencies)
+  - target/enterprise-application-1.0-SNAPSHOT-shaded.jar (corrupt/undesired extra shaded jar)
+- Root cause: Conflicting or legacy shade configuration attaching an additional shaded artifact while the Snowman.jar produced by maven-jar-plugin was not a fat jar. Jetty dependencies were not on the classpath at runtime for Snowman.jar.
+
+Resolutions implemented:
+- Enforced a single shade execution with finalName=Snowman and shadedArtifactAttached=false so only target/Snowman.jar is produced.
+- Verified MANIFEST Main-Class = com.mycompany.entapp.snowman.EnterpriseApplication and shade includes org.eclipse.jetty.* and other runtime deps.
+- Kept Jetty dependencies with compile scope (not provided) so they are packaged into the fat jar.
+- Simplified resources plugin configuration to defaults to avoid permission issues.
 
 Runtime validation:
-- SLF4J runtime binding added via Logback (logback-classic 1.2.13); NOP/StaticLoggerBinder warnings resolved. Application now emits logs to console under Java 21.
+- java -jar -Dserver.port=3001 target/Snowman.jar previously failed with NoClassDefFoundError: org/eclipse/jetty/server/Handler (thin jar symptom).
+- After shade fix, Snowman.jar is expected to run with embedded Jetty on the configured port. CI preview should now use this artifact reliably.
 
 Next steps for Java 21:
 - Upgrade toolchain to Java 21 using maven-toolchains-plugin or maven-compiler-plugin + toolchains file.

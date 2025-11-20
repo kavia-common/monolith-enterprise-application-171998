@@ -314,32 +314,7 @@
                 </executions>
             </plugin>
 
-            <!-- Optional: Toolchains disabled to avoid build failure when no JDK 21 toolchain is configured in CI.
-                 When CI is ready, re-enable this plugin and add ~/.m2/toolchains.xml accordingly. -->
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-toolchains-plugin</artifactId>
-                <version>${maven.toolchains.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>toolchain</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <toolchains>
-                        <jdk>
-                            <version>21</version>
-                            <vendor>any</vendor>
-                        </jdk>
-                    </toolchains>
-                </configuration>
-            </plugin>
-            -->
-
-            <!-- Copy only standard resources; avoid special handling of webapp to prevent POSIX permission copy failures -->
+            <!-- Resources plugin (default behavior adequate) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -347,16 +322,10 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <overwrite>true</overwrite>
-                    <useDefaultDelimiters>true</useDefaultDelimiters>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>xml</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>json</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>properties</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
 
-            <!-- Shade to produce an uber-jar named target/Snowman.jar with the correct Main-Class -->
+            <!-- Single Shade execution that produces target/Snowman.jar (fat jar) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -371,6 +340,7 @@
                         <configuration>
                             <finalName>Snowman</finalName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!-- Ensure only Snowman.jar is produced; do not attach an extra *-shaded.jar -->
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
@@ -384,6 +354,7 @@
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
                             </transformers>
+                            <!-- Do not exclude Jetty or any required javax.* APIs -->
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -397,6 +368,20 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Ensure jar manifest points to main class if shade is skipped -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.mycompany.entapp.snowman.EnterpriseApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
 
