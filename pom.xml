@@ -9,6 +9,8 @@
     <url>http://maven.apache.org</url>
 
     <properties>
+        <!-- Skip Liquibase by default; enable with -Pwith-liquibase -->
+        <liquibase.skip>true</liquibase.skip>
         <spring.version>[4.3.18,)</spring.version>
         <junit.version>4.13.1</junit.version>
         <java.version>1.7</java.version>
@@ -327,18 +329,43 @@
                 <version>3.0.5</version>
                 <configuration>
                     <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+                    <skip>${liquibase.skip}</skip>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
     </build>
+
+<profiles>
+    <profile>
+        <id>with-liquibase</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>
+        <properties>
+            <liquibase.skip>false</liquibase.skip>
+        </properties>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>3.0.5</version>
+                    <configuration>
+                        <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>update</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
 
 </project>
