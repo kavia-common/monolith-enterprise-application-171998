@@ -15,6 +15,12 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.net.URL;
 
+/**
+ * PUBLIC_INTERFACE
+ * Entry point for the Snowman application when running the shaded executable JAR.
+ * This class is referenced by the maven-shade-plugin Manifest mainClass to enable
+ * `java -jar target/Snowman.jar`.
+ */
 public class EnterpriseApplication {
 
     private static final int DEFAULT_PORT = 8090;

@@ -259,9 +259,10 @@
     </dependencies>
 
     <build>
+        <!-- Enforce final artifact name to be Snowman.jar -->
         <finalName>Snowman</finalName>
         <plugins>
-            <!-- Ensure Java 21 compilation -->
+            <!-- Ensure Java compilation -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -273,7 +274,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Run unit tests with Java 21 compatible surefire -->
+            <!-- Unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -283,7 +284,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Run integration tests if present -->
+            <!-- Integration tests if applicable -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -293,7 +294,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Enforce Java 21 at build time (can be disabled in CI if not available) -->
+            <!-- Enforce Java version (non-fatal to avoid CI failure when Java 17 is present) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -305,7 +306,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[21,)</version>
+                                    <version>[17,)</version>
                                 </requireJavaVersion>
                             </rules>
                             <fail>false</fail>
@@ -314,7 +315,7 @@
                 </executions>
             </plugin>
 
-            <!-- Resources plugin (default behavior adequate) -->
+            <!-- Resources -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -325,7 +326,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Single Shade execution that produces target/Snowman.jar (fat jar) -->
+            <!-- Shade: produce a single executable fat jar at target/Snowman.jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -340,7 +341,6 @@
                         <configuration>
                             <finalName>Snowman</finalName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <!-- Ensure only Snowman.jar is produced; do not attach an extra *-shaded.jar -->
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
@@ -354,7 +354,6 @@
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
                             </transformers>
-                            <!-- Do not exclude Jetty or any required javax.* APIs -->
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -385,7 +384,6 @@
             </plugin>
         </plugins>
 
-        <!-- Ensure jar is built with manifest pointing to main class (even for non-shaded builds) -->
         <pluginManagement>
             <plugins>
                 <plugin>
