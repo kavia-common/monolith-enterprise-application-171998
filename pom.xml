@@ -160,19 +160,14 @@
             <version>${jetty.version}</version>
         </dependency>
 
-        <!-- Explicit util module to ensure all handler utilities are present -->
+        <!-- Explicit util module to ensure all handler utilities are present (ShutdownThread, etc.) -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <version>${jetty.version}</version>
         </dependency>
 
-        <!-- Additional Jetty modules used at runtime by embedded server -->
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-annotations</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
+        <!-- Ensure IO and Security modules are present at runtime -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-io</artifactId>

@@ -55,11 +55,13 @@ public class EnterpriseApplication {
         }
         webAppContext.setDescriptor(webXml.getURI().toString());
 
+        // Prefer classpath resource for the entire webapp
         Resource webappRoot = Resource.newClassPathResource("/webapp", true, false);
         if (webappRoot == null || !webappRoot.exists()) {
             throw new IllegalStateException("Cannot locate webapp directory at classpath:/webapp");
         }
         webAppContext.setBaseResource(webappRoot);
+        webAppContext.setWar(webappRoot.getURI().toString());
 
         server.setHandler(webAppContext);
         server.start();
