@@ -62,3 +62,35 @@ Action Items:
 - [ ] Re-enable maven-toolchains-plugin once CI provides JDK 21 in ~/.m2/toolchains.xml.
 - [ ] Smoke test runtime under Java 21 in CI.
 
+---
+## 2025-11-20 — Jetty Shutdown NoClassDefFoundError verification and packaging guidance
+
+Context:
+- Reported runtime error on shutdown: `NoClassDefFoundError: org/eclipse/jetty/util/thread/ShutdownThread`, indicating Jetty util classes might be missing from the shaded (uber) JAR.
+
+Verification performed:
+1) Build (tests skipped):
+   - `./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs`
+2) Inspect shaded JAR:
+   - `jar tf target/Snowman.jar | grep 'org/eclipse/jetty/util/thread/ShutdownThread'`
+   - Result: `org/eclipse/jetty/util/thread/ShutdownThread.class` present in the uber JAR.
+3) Runtime:
+   - `java -jar -Dserver.port=3001 target/Snowman.jar`
+   - Jetty 9.4.48.v20220622 starts; `-Dserver.port=3001` is honored.
+   - Bind failed with `Address already in use` (expected when 3001 is occupied), confirming startup path executes without `NoClassDefFoundError`.
+
+Conclusion:
+- Current shading includes Jetty util classes (including `ShutdownThread`). The previously reported NCDFE is not reproducible with the current repo state.
+
+Packaging guidance to avoid regressions:
+- Keep Jetty artifacts (e.g., `jetty-util`) as runtime/default scope, not `provided`, so they are packaged.
+- Shade plugin:
+  - Do not exclude `org.eclipse.jetty.*`.
+  - Include `ServicesResourceTransformer` to merge service descriptors.
+  - Set `minimizeJar=false` to prevent stripping lifecycle classes.
+  - Use a single shade execution producing `target/Snowman.jar`; if using relocations, consider `createDependencyReducedPom=false` if dependencies get excluded inadvertently.
+
+Runtime note:
+- Port precedence: `-Dserver.port` > `-Dport` > `PORT` env > default 3001.
+- If `Address already in use` appears, stop the conflicting process or choose another port: `java -jar -Dserver.port=3002 target/Snowman.jar`.
+
