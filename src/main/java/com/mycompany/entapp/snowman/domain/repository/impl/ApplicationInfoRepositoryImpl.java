@@ -12,14 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.InitializingBean;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class ApplicationInfoRepositoryImpl implements ApplicationInfoRepository {
+public class ApplicationInfoRepositoryImpl implements ApplicationInfoRepository, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationInfoRepositoryImpl.class);
 
@@ -29,10 +29,9 @@ public class ApplicationInfoRepositoryImpl implements ApplicationInfoRepository 
     // using an in-memory collection (map) to load this static data upon app startup
     private Map<Integer, AppInfo> appInfoMap = new HashMap<>();
 
-    @PostConstruct
-    public void initialize() {
+    @Override
+    public void afterPropertiesSet() {
         LOGGER.info("Loading AppInfo from Database");
-
         List<AppInfo> appInfos = applicationInfoDao.loadApplicationInfos();
         for (AppInfo appInfo : appInfos) {
             appInfoMap.put(appInfo.getId(), appInfo);

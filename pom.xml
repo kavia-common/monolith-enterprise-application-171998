@@ -36,6 +36,10 @@
         <ehcache.version>2.9.1</ehcache.version>
         <activemq-spring.version>5.10.0</activemq-spring.version>
         <quartz.version>2.3.2</quartz.version>
+        <!-- Add javax annotation api for PostConstruct used by codebase -->
+        <javax.annotation.version>1.3.2</javax.annotation.version>
+        <!-- Ensure JMS API remains javax (Spring 4.x expects javax.jms.*) -->
+        <javax.jms.version>1.1</javax.jms.version>
     </properties>
 
     <dependencies>

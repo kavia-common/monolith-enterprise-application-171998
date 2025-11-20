@@ -31,7 +31,8 @@ public class EnterpriseApplication {
 
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setDescriptor(getResource("webapp/WEB-INF/web.xml"));
-        webAppContext.setResourceBase(getResource("webapp"));
+        // For compatibility across Jetty versions, use setWar to point to the exploded webapp directory
+        webAppContext.setWar(getResource("webapp"));
         webAppContext.setContextPath("/");
         webAppContext.setParentLoaderPriority(true);
 
@@ -62,7 +63,8 @@ public class EnterpriseApplication {
         if (resourceURL == null) {
             throw new RuntimeException("Unable to fetch specified resource: " + resourceName);
         }
-        return resourceURL.toString();
+        // Jetty WebAppContext#setResourceBase expects a filesystem path; use URL.getFile()
+        return resourceURL.getFile();
     }
 
     private static int resolvePort() {
