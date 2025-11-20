@@ -254,7 +254,7 @@
         <!-- javax JMS API (Spring 4 / ActiveMQ 5.x expect javax.jms) -->
         <dependency>
             <groupId>javax.jms</groupId>
-            <artifactId>jms</artifactId>
+            <artifactId>javax.jms-api</artifactId>
             <version>${javax.jms.version}</version>
         </dependency>
 
@@ -339,17 +339,19 @@
                         </goals>
                         <configuration>
                             <finalName>Snowman</finalName>
-                            <!-- Do not attach with a classifier; overwrite the main artifact so Snowman.jar is shaded -->
+                            <!-- Overwrite the main artifact so target/Snowman.jar is shaded and executable -->
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <transformers>
+                                <!-- Merge service descriptors -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <!-- Set main class and merge manifest -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.mycompany.entapp.snowman.EnterpriseApplication</mainClass>
                                 </transformer>
+                                <!-- Merge Spring resources -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
                                 </transformer>
-                                <!-- the following not really needed -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
