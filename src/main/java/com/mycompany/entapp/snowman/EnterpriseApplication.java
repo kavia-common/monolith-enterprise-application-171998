@@ -64,15 +64,18 @@ public class EnterpriseApplication {
         server.setHandler(webAppContext);
         server.start();
 
-        // Clean shutdown
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            server.setStopAtShutdown(true);
-            try {
-                if (server.isStarted()) {
-                    server.stop();
+        // Clean shutdown (Java 7 compatible - avoid lambdas)
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                server.setStopAtShutdown(true);
+                try {
+                    if (server.isStarted()) {
+                        server.stop();
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         }));
 

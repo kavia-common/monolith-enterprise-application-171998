@@ -1,18 +1,16 @@
-<web-app version="3.0"
-         xmlns="http://java.sun.com/xml/ns/javaee"
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" metadata-complete="true">
+         version="3.0"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-    <servlet>
-        <servlet-name>SpringServlet</servlet-name>
-        <display-name>Spring Servlet</display-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+    <display-name>Snowman</display-name>
 
-    <servlet-mapping>
-        <servlet-name>SpringServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
+    <!-- Minimal web.xml to start a Spring MVC style app if needed.
+         Existing Spring configuration files are in classpath:/META-INF/*.xml -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
