@@ -11,7 +11,9 @@
     <properties>
         <spring.version>5.3.30</spring.version>
         <junit.version>4.13.1</junit.version>
-        <java.version>17</java.version>
+        <!-- Target Java 21 -->
+        <java.version>21</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <mockito.version>4.11.0</mockito.version>
         <powermock.version>2.0.9</powermock.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
@@ -25,7 +27,7 @@
         <hyperSql.version>2.3.2</hyperSql.version>
         <h2.version>2.1.210</h2.version>
         <derby.version>10.11.1.1</derby.version>
-        <mysql.version>8.0.16</mysql.version>
+        <mysql.version>8.4.0</mysql.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
         <hibernate.core.version>5.4.24.Final</hibernate.core.version>
         <hibernate.entitymanager.version>4.3.10.Final</hibernate.entitymanager.version>
@@ -34,6 +36,13 @@
         <ehcache.version>2.9.1</ehcache.version>
         <activemq-spring.version>5.10.0</activemq-spring.version>
         <quartz.version>2.3.2</quartz.version>
+        <!-- Plugin versions compatible with Java 21 -->
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
+        <maven.failsafe.plugin.version>3.2.5</maven.failsafe.plugin.version>
+        <maven.enforcer.plugin.version>3.4.1</maven.enforcer.plugin.version>
+        <maven.toolchains.plugin.version>3.1.0</maven.toolchains.plugin.version>
+        <maven.shade.plugin.version>3.5.1</maven.shade.plugin.version>
     </properties>
 
     <dependencies>
@@ -154,9 +163,10 @@
             <artifactId>derby</artifactId>
             <version>${derby.version}</version>
         </dependency>
+        <!-- Use modern MySQL Connector/J artifact and version supporting Java 21 -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
         </dependency>
         <dependency>
@@ -238,6 +248,84 @@
     <build>
         <finalName>Snowman</finalName>
         <plugins>
+            <!-- Ensure Java 21 compilation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>UTF-8</encoding>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+
+            <!-- Run unit tests with Java 21 compatible surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+
+            <!-- Run integration tests if present -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven.failsafe.plugin.version}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+
+            <!-- Enforce Java 21 at build time (can be disabled in CI if not available) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven.enforcer.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java</id>
+                        <goals><goal>enforce</goal></goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[21,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                            <fail>false</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Optional: Toolchains disabled to avoid build failure when no JDK 21 toolchain is configured in CI.
+                 When CI is ready, re-enable this plugin and add ~/.m2/toolchains.xml accordingly. -->
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>${maven.toolchains.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>21</version>
+                            <vendor>any</vendor>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+            -->
+
             <!-- Copy only standard resources; avoid special handling of webapp to prevent POSIX permission copy failures -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -259,7 +347,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${maven.shade.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>shade-uber-jar</id>

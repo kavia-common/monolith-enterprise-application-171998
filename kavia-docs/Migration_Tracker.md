@@ -6,8 +6,8 @@ Scope:
 - Track progress of migrating Snowman backend to run on Java 21 in CI/preview environments.
 
 Current Java level in build:
-- Maven wrapper reports Java 17 runtime in environment.
-- POM property <java.version>17</java.version> — migration to 21 pending.
+- Maven wrapper currently runs with Java 17 in this environment; toolchains temporarily disabled to allow build.
+- POM property <java.version>21</java.version> with maven-compiler-plugin (release=21).
 
 Build issues addressed in this change:
 - Maven resource copy failed with "Operation not permitted" when attempting to copy src/main/resources/webapp/WEB-INF/web.xml into target/classes with POSIX mode preservation.
@@ -21,7 +21,11 @@ Next steps for Java 21:
 - Run tests on Java 21, address any reflective access or illegal access warnings.
 
 Action Items:
-- [ ] Update <java.version> to 21 when environment supports toolchain.
-- [ ] Add maven-compiler-plugin with release 21 and ensure bytecode targets 21.
+- [x] Update <java.version> to 21 and configure compiler release to 21.
+- [x] Add maven-compiler-plugin (release 21), surefire/failsafe/enforcer versions compatible with Java 21.
+- [x] Switch MySQL driver from com.mysql.jdbc.Driver to com.mysql.cj.jdbc.Driver and update connector to com.mysql:mysql-connector-j.
+- [ ] Validate Spring 5.3.x + Jetty 9.4.x compatibility with Java 21; plan upgrades to Spring 6/Jetty 11 if needed.
+- [ ] Run tests on Java 21, fix reflective-access issues if any.
+- [ ] Re-enable maven-toolchains-plugin once CI provides JDK 21 in ~/.m2/toolchains.xml.
 - [ ] Smoke test runtime under Java 21 in CI.
 

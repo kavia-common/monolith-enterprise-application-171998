@@ -26,7 +26,7 @@ public abstract class AbstractJDBCDao {
 
     protected void setupDBDriver() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             LOG.error("{}", e); // TODO should throw a business exception back up
         }
