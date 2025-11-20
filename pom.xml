@@ -272,22 +272,35 @@
                 </executions>
             </plugin>
             
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.0.5</version>
-                <configuration>
-                    <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!-- Liquibase should not run during normal CI packaging since it requires a live DB. -->
+            <!-- We move Liquibase execution to an optional profile below. -->
         </plugins>
     </build>
+
+    <!-- Optional profile to run Liquibase when explicitly requested. -->
+    <profiles>
+        <profile>
+            <id>with-liquibase</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.0.5</version>
+                        <configuration>
+                            <propertyFile>src/main/resources/db/liquibase.properties</propertyFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>update</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

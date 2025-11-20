@@ -25,5 +25,13 @@ if [ ! -f "$JAR_PATH" ]; then
   exit 1
 fi
 
-echo "Starting Snowman..."
-exec java -jar "$JAR_PATH"
+# Determine port: prefer CLI arg, then PORT env, else default 3001 for preview
+PORT_ARG="${1:-}"
+if [[ -n "$PORT_ARG" ]]; then
+  PORT="$PORT_ARG"
+else
+  PORT="${PORT:-3001}"
+fi
+
+echo "Starting Snowman on port ${PORT}..."
+exec java -Dport="${PORT}" -jar "$JAR_PATH"
