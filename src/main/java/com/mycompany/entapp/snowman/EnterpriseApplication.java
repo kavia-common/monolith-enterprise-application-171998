@@ -13,6 +13,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
  * EnterpriseApplication boots an embedded Jetty and serves the webapp packaged inside the shaded JAR.
+ * Ensures graceful shutdown using Jetty's ShutdownThread (available via jetty-util shaded into the JAR).
  */
 public class EnterpriseApplication {
 
