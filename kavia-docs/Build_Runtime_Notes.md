@@ -1,8 +1,8 @@
 # Build and Runtime Notes
 
 - Requires Java 17+ runtime; Java 21 migration is in-progress. The fat jar runs on Java 17 in the CI image.
-- Default Jetty port: 8090. Override with -Dserver.port=3001 (as used by preview).
-- Command: java -jar -Dserver.port=3001 target/Snowman.jar
+- Default Jetty bind: 0.0.0.0:3001. You can override with -Dserver.port=<port> and -Dserver.address=<host>.
+- Command: java -jar -Dserver.address=0.0.0.0 -Dserver.port=3001 target/Snowman.jar
 
 - To build the application while skipping all tests (unit, integration, and test-compile), run:
   ./mvnw -q clean package -Dmaven.test.skip=true -DskipTests -DskipITs

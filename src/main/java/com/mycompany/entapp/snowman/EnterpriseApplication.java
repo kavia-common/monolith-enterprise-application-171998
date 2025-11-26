@@ -13,33 +13,41 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+import java.net.InetAddress;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * PUBLIC_INTERFACE
  * Entry point for the Snowman application when running the shaded executable JAR.
  * This class is referenced by the maven-shade-plugin Manifest mainClass to enable
  * `java -jar target/Snowman.jar`.
+ *
+ * The application starts an embedded Jetty server and blocks the main thread via server.join(),
+ * ensuring the process stays alive under the preview system until an external SIGTERM/SIGINT is sent.
  */
 public class EnterpriseApplication {
 
     private static final int DEFAULT_PORT = 3001;
+    private static final String DEFAULT_HOST = "0.0.0.0";
 
     private EnterpriseApplication() {
     }
 
     public static void main(String[] args) throws Exception {
-
+        // Build server and connector
         final Server server = new Server();
-
         final ServerConnector serverConnector = new ServerConnector(server);
 
         final int port = resolvePort();
-        serverConnector.setPort(port);
+        final String host = resolveHost();
 
-        // Simple startup log to confirm resolved port precedence at runtime
-        System.out.println("[Snowman] Starting embedded Jetty on port " + port
-                + " (precedence: -Dserver.port > -Dport > PORT env > default 3001)");
+        serverConnector.setPort(port);
+        serverConnector.setHost(host);
+
+        // Simple startup log to confirm resolved address/port precedence at runtime
+        System.out.println("[Snowman] Starting embedded Jetty on " + host + ":" + port
+                + " (precedence: -Dserver.port > -Dport > PORT env > default 3001; host via -Dserver.address or 0.0.0.0)");
 
         server.setConnectors(new Connector[]{serverConnector});
 
@@ -56,25 +64,43 @@ public class EnterpriseApplication {
         // or JspHandler to avoid unnecessary initialization and warnings on startup.
 
         server.setHandler(webAppContext);
-        server.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (server.isStarted()) {
-                    server.setStopAtShutdown(true);
+        try {
+            server.start();
+            System.out.println("[Snowman] Jetty started. Listening on http://" + host + ":" + port + "/");
+        } catch (Exception startEx) {
+            System.err.println("[Snowman] FATAL: Jetty failed to start: " + startEx.getMessage());
+            startEx.printStackTrace(System.err);
+            // Do not call System.exit; allow the runtime to surface the failure naturally.
+            throw startEx;
+        }
 
-                    try {
-                        server.stop();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+        // Add a robust shutdown hook that logs a reason and stops server gracefully.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                System.out.println("[Snowman] Shutdown hook triggered. Initiating graceful shutdown...");
+                if (server.isStopping() || server.isStopped()) {
+                    System.out.println("[Snowman] Server already stopping/stopped.");
+                    return;
                 }
+                server.setStopAtShutdown(true);
+                server.stop();
+                System.out.println("[Snowman] Jetty stopped successfully.");
+            } catch (Exception e) {
+                System.err.println("[Snowman] Error during shutdown: " + e.getMessage());
+                e.printStackTrace(System.err);
             }
-        }));
+        }, "snowman-shutdown-hook"));
 
-        server.join();
-
+        // Block main thread so process stays alive.
+        try {
+            server.join();
+            System.out.println("[Snowman] server.join() completed; process will exit now.");
+        } catch (InterruptedException ie) {
+            // Log and restore interrupt status; do not System.exit here.
+            System.err.println("[Snowman] Main thread interrupted (likely SIGINT/SIGTERM): " + ie.getMessage());
+            Thread.currentThread().interrupt();
+        }
     }
 
     private static String getResource(String resourceName) {
@@ -133,5 +159,21 @@ public class EnterpriseApplication {
             }
         }
         return DEFAULT_PORT;
+    }
+
+    // PUBLIC_INTERFACE
+    /**
+     * Resolves the HTTP server bind address with the following precedence:
+     * 1) -Dserver.address system property (Spring convention)
+     * 2) Default 0.0.0.0 (bind all interfaces)
+     *
+     * @return resolved host string to bind Jetty.
+     */
+    private static String resolveHost() {
+        String addr = System.getProperty("server.address");
+        if (addr != null && !addr.isEmpty()) {
+            return addr.trim();
+        }
+        return DEFAULT_HOST;
     }
 }
