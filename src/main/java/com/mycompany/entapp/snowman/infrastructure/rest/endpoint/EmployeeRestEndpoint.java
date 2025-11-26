@@ -70,6 +70,17 @@ public class EmployeeRestEndpoint {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getEmployeeFallback(@PathVariable("id") String id) {
+        // Detect literal placeholder patterns early and guide the caller.
+        if (isPlaceholder(id, "employeeId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric employeeId instead of {employeeId}.\","
+                    + "\"example\":\"/employee/123\","
+                    + "\"hint\":\"If you see %7BemployeeId%7D, your client is URL-encoding the template; remove the braces.\","
+                    + "\"docs\":\"/openapi.json\""
+                    + "}";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        }
         try {
             Integer numericId = Integer.valueOf(id);
             Employee employee = employeeService.getEmployee(numericId);
@@ -83,11 +94,12 @@ public class EmployeeRestEndpoint {
             return ResponseEntity.ok(json);
         } catch (NumberFormatException ex) {
             String body = "{"
-                    + "\"error\":\"Employee not found\","
-                    + "\"message\":\"The provided path segment is not a numeric employeeId: '" + safe(id) + "'. Use /employee/1.\","
+                    + "\"error\":\"Invalid employeeId\","
+                    + "\"message\":\"The provided path segment is not a numeric employeeId: '" + safe(id) + "'.\","
+                    + "\"example\":\"/employee/1\","
                     + "\"docs\":\"/openapi.json\""
                     + "}";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         }
     }
 
@@ -132,9 +144,28 @@ public class EmployeeRestEndpoint {
     }
 
     @RequestMapping(value = "/{employeeId}/delete", method = RequestMethod.DELETE)
-    public ResponseEntity deleteExistingEmployee(@PathVariable Integer employeeId){
-        employeeService.deleteEmployee(employeeId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity deleteExistingEmployee(@PathVariable("employeeId") String employeeId){
+        if (isPlaceholder(employeeId, "employeeId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric employeeId instead of {employeeId}.\","
+                    + "\"example\":\"/employee/123/delete\","
+                    + "\"docs\":\"/openapi.json\""
+                    + "}";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        }
+        try {
+            Integer id = Integer.valueOf(employeeId);
+            employeeService.deleteEmployee(id);
+            return ResponseEntity.ok().build();
+        } catch (NumberFormatException ex) {
+            String body = "{"
+                    + "\"error\":\"Invalid employeeId\","
+                    + "\"message\":\"The provided path segment is not a numeric employeeId: '" + safe(employeeId) + "'.\","
+                    + "\"example\":\"/employee/1/delete\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
     }
 
     /**
@@ -143,5 +174,18 @@ public class EmployeeRestEndpoint {
     private static String safe(String v) {
         if (v == null) return "";
         return v.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
+    /**
+     * Detects if a path segment is a literal placeholder like "{employeeId}" or URL-encoded "%7BemployeeId%7D",
+     * or a generic "{...}" pattern often copied from documentation.
+     */
+    private static boolean isPlaceholder(String value, String name) {
+        if (value == null) return false;
+        String v = value.trim();
+        if (v.equalsIgnoreCase("%7B" + name + "%7D")) return true; // URL-encoded
+        if (v.equalsIgnoreCase("{" + name + "}")) return true;      // literal
+        // Generic braces pattern e.g. "{id}" or "{anything}"
+        return (v.startsWith("{") && v.endsWith("}"));
     }
 }

@@ -25,8 +25,27 @@ public class UserRestEndpoint {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<UserResource> getUser(@PathVariable("userId") String userId) {
+    @RequestMapping(value = "/{userId    private static String safe(String v) {
+        if (v == null) return "";
+        return v.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+    private static boolean isPlaceholder(String value, String name) {
+        if (value == null) return false;
+        String v = value.trim();
+        if (v.equalsIgnoreCase("%7B" + name + "%7D")) return true;
+        if (v.equalsIgnoreCase("{" + name + "}")) return true;
+        return (v.startsWith("{") && v.endsWith("}"));
+    }
+}", method = RequestMethod.GET)
+    public ResponseEntity getUser(@PathVariable("userId") String userId) {
+        if (isPlaceholder(userId, "userId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a concrete userId instead of {userId}.\","
+                    + "\"example\":\"/user/1\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
         User user = userService.findUser(userId);
         UserResource userResource = UserResourceMapper.mapUserToUserResource(user);
         return ResponseEntity.ok(userResource);
@@ -47,8 +66,26 @@ public class UserRestEndpoint {
     }
 
     @RequestMapping(value = "{userId}/delete", method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@PathVariable Integer userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity deleteUser(@PathVariable("userId") String userId) {
+        if (isPlaceholder(userId, "userId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric userId instead of {userId}.\","
+                    + "\"example\":\"/user/1/delete\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
+        try {
+            Integer id = Integer.valueOf(userId);
+            userService.deleteUser(id);
+            return ResponseEntity.ok().build();
+        } catch (NumberFormatException ex) {
+            String body = "{"
+                    + "\"error\":\"Invalid userId\","
+                    + "\"message\":\"The provided userId is not numeric: '" + safe(userId) + "'.\","
+                    + "\"example\":\"/user/1/delete\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
     }
 }

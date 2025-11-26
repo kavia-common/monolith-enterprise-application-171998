@@ -25,11 +25,40 @@ public class ClientRestEndpoint {
     @Autowired
     private ClientService clientService;
 
-    @RequestMapping(value = "/{clientId}", method = RequestMethod.GET)
-    public ResponseEntity<ClientResource> getClientInfo(@PathVariable("clientId") Integer clientId) {
-        Client client = clientService.getClient(clientId);
-        ClientResource clientResource = ClientResourceMapper.mapToClientResource(client);
-        return ResponseEntity.ok(clientResource);
+    @RequestMapping(value = "/{clientId    private static String safe(String v) {
+        if (v == null) return "";
+        return v.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+    private static boolean isPlaceholder(String value, String name) {
+        if (value == null) return false;
+        String v = value.trim();
+        if (v.equalsIgnoreCase("%7B" + name + "%7D")) return true;
+        if (v.equalsIgnoreCase("{" + name + "}")) return true;
+        return (v.startsWith("{") && v.endsWith("}"));
+    }
+}", method = RequestMethod.GET)
+    public ResponseEntity getClientInfo(@PathVariable("clientId") String clientId) {
+        if (isPlaceholder(clientId, "clientId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric clientId instead of {clientId}.\","
+                    + "\"example\":\"/client/1\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
+        try {
+            Integer id = Integer.valueOf(clientId);
+            Client client = clientService.getClient(id);
+            ClientResource clientResource = ClientResourceMapper.mapToClientResource(client);
+            return ResponseEntity.ok(clientResource);
+        } catch (NumberFormatException ex) {
+            String body = "{"
+                    + "\"error\":\"Invalid clientId\","
+                    + "\"message\":\"The provided clientId is not numeric: '" + safe(clientId) + "'.\","
+                    + "\"example\":\"/client/1\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
@@ -53,11 +82,30 @@ public class ClientRestEndpoint {
     }
 
     @RequestMapping(value = "/{clientId}", method = RequestMethod.DELETE)
-    public void deleteClientInfo(@PathVariable("clientId") Integer clientId) {
+    public ResponseEntity deleteClientInfo(@PathVariable("clientId") String clientId) {
+        if (isPlaceholder(clientId, "clientId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric clientId instead of {clientId}.\","
+                    + "\"example\":\"/client/1\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
         try {
-            clientService.deleteClient(clientId);
-        } catch (SnowmanException e) {
-            throw new RuntimeException(e);
+            Integer id = Integer.valueOf(clientId);
+            try {
+                clientService.deleteClient(id);
+                return ResponseEntity.ok().build();
+            } catch (SnowmanException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (NumberFormatException ex) {
+            String body = "{"
+                    + "\"error\":\"Invalid clientId\","
+                    + "\"message\":\"The provided clientId is not numeric: '" + safe(clientId) + "'.\","
+                    + "\"example\":\"/client/1\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
         }
     }
 }

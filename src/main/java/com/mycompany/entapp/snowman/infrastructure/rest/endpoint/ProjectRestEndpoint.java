@@ -23,16 +23,47 @@ import javax.validation.Valid;
 @RequestMapping("/project")
 public class ProjectRestEndpoint {
 
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRestEndpoint.class);
 
     @Autowired
     private ProjectService projectService;
 
-    @RequestMapping("/{projectId}")
-    public ResponseEntity<ProjectResource> getProject(@PathVariable Integer projectId) {
-        Project project = projectService.getProject(projectId);
-        ProjectResource projectResource = ProjectResourceMapper.mapToProjectResource(project);
-        return ResponseEntity.ok(projectResource);
+    @RequestMapping("/{projectId    private static String safe(String v) {
+        if (v == null) return "";
+        return v.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+    private static boolean isPlaceholder(String value, String name) {
+        if (value == null) return false;
+        String v = value.trim();
+        if (v.equalsIgnoreCase("%7B" + name + "%7D")) return true;
+        if (v.equalsIgnoreCase("{" + name + "}")) return true;
+        return (v.startsWith("{") && v.endsWith("}"));
+    }
+}")
+    public ResponseEntity getProject(@PathVariable("projectId") String projectId) {
+        if (isPlaceholder(projectId, "projectId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric projectId instead of {projectId}.\","
+                    + "\"example\":\"/project/1\","
+                    + "\"docs\":\"/openapi.json\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
+        try {
+            Integer id = Integer.valueOf(projectId);
+            Project project = projectService.getProject(id);
+            ProjectResource projectResource = ProjectResourceMapper.mapToProjectResource(project);
+            return ResponseEntity.ok(projectResource);
+        } catch (NumberFormatException ex) {
+            String body = "{"
+                    + "\"error\":\"Invalid projectId\","
+                    + "\"message\":\"The provided projectId is not numeric: '" + safe(projectId) + "'.\","
+                    + "\"example\":\"/project/1\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
     }
 
     @RequestMapping("/create")
@@ -43,11 +74,30 @@ public class ProjectRestEndpoint {
     }
 
     @RequestMapping("/{projectId}/delete")
-    public void deleteProject(@PathVariable Integer projectId) {
-        projectService.deleteProject(projectId);
+    public ResponseEntity deleteProject(@PathVariable("projectId") String projectId) {
+        if (isPlaceholder(projectId, "projectId")) {
+            String body = "{"
+                    + "\"error\":\"Invalid path placeholder used as literal\","
+                    + "\"message\":\"Send a numeric projectId instead of {projectId}.\","
+                    + "\"example\":\"/project/1/delete\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
+        try {
+            Integer id = Integer.valueOf(projectId);
+            projectService.deleteProject(id);
+            return ResponseEntity.ok().build();
+        } catch (NumberFormatException ex) {
+            String body = "{"
+                    + "\"error\":\"Invalid projectId\","
+                    + "\"message\":\"The provided projectId is not numeric: '" + safe(projectId) + "'.\","
+                    + "\"example\":\"/project/1/delete\""
+                    + "}";
+            return ResponseEntity.badRequest().body(body);
+        }
     }
 
-    @RequestMapping("/update}")
+    @RequestMapping("/update")
     public ResponseEntity<?> updateProject(ProjectResource projectResource) {
         Project project = ProjectResourceMapper.mapToProject(projectResource);
         projectService.updateProject(project);
