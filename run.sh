@@ -57,7 +57,9 @@ else
 fi
 
 echo "Starting Snowman using: ${JAR_TO_RUN} on host 0.0.0.0 port ${PORT}"
-# Bind to all interfaces by default for preview system; allow override via SERVER_ADDRESS env if set.
+# Bind to all interfaces by default for preview system; keep default 0.0.0.0 and port 3001 unless overridden explicitly.
 SERVER_ADDRESS="${SERVER_ADDRESS:-0.0.0.0}"
-# Use -Dserver.port for embedded server (highest precedence), also pass legacy -Dport; application falls back to PORT env or 3001 default.
-exec java -jar -Dserver.address="${SERVER_ADDRESS}" -Dserver.port="${PORT}" -Dport="${PORT}" "${JAR_TO_RUN}"
+# Force the desired defaults; allow explicit override via env or first arg, but normalize to 3001 by default.
+PORT="${PORT:-3001}"
+# Use -Dserver.address and -Dserver.port for embedded server (highest precedence).
+exec java -jar -Dserver.address="${SERVER_ADDRESS}" -Dserver.port="${PORT}" "${JAR_TO_RUN}"
