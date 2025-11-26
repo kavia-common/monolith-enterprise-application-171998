@@ -30,9 +30,12 @@ public class EmployeeRestEndpoint {
     // PUBLIC_INTERFACE
     /**
      * Get employee by numeric ID.
-     * This is the primary, existing route that expects an integer path variable.
+     * This is the primary route that expects a numeric employeeId path variable.
+     * Examples:
+     * - GET /employee/1      -> 200 with employee
+     * - GET /employee/9999   -> 404 (if not found)
      */
-    @RequestMapping(value = "/{employeeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{employeeId:[0-9]+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EmployeeResource> getEmployee(@PathVariable Integer employeeId) {
         Employee employee = employeeService.getEmployee(employeeId);
         EmployeeResource employeeResource = EmployeeResourceMapper.mapEmployeeToEmployeeResource(employee);
@@ -41,20 +44,20 @@ public class EmployeeRestEndpoint {
 
     // PUBLIC_INTERFACE
     /**
-     * Compatibility handler for preview systems that request literal placeholder tokens.
-     *
-     * Handles:
-     * - GET /employee/%7BemployeeId%7D    (URL-encoded)
-     * - GET /employee/{employeeId}        (string literal as-is)
-     *
-     * Returns 400 Bad Request with a helpful message explaining correct usage.
+     * Defensive handler for cases where clients send the literal placeholder token.
+     * Handles the following and returns 400 with guidance:
+     * - GET /employee/%7BemployeeId%7D
+     * - GET /employee/{employeeId}
      */
-    @RequestMapping(value = {"/%7BemployeeId%7D", "/{employeeId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, params = "literal=true", headers = "!X-Ignore-Literal")
-    public ResponseEntity<String> literalEmployeeIdCompatibility() {
+    @RequestMapping(
+            value = {"/%7BemployeeId%7D", "/{employeeId:\\{employeeId\\}}"},
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> rejectLiteralEmployeeId() {
         String body = "{"
                 + "\"error\":\"Invalid path placeholder used as literal\","
-                + "\"message\":\"This endpoint expects a numeric employeeId, e.g. /employee/123. "
-                + "It looks like the placeholder {employeeId} was sent literally by a preview system.\","
+                + "\"message\":\"Send a numeric employeeId instead of {employeeId}. Example: /employee/123\","
+                + "\"hint\":\"If you see %7BemployeeId%7D, your client is URL-encoding the template; remove the braces.\","
                 + "\"docs\":\"/openapi.json\""
                 + "}";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
@@ -62,29 +65,26 @@ public class EmployeeRestEndpoint {
 
     // PUBLIC_INTERFACE
     /**
-     * Fallback matcher that captures any string as {id}. If it's non-numeric, respond 404 with clear message.
-     * This helps when preview tools construct /employee/{id} with non-numeric values.
+     * Fallback for any non-numeric path segment. If numeric, delegate to service. If not numeric, return 404 with message.
+     * This prevents the servlet container from serving a static default handler and gives clearer feedback.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getEmployeeFallback(@PathVariable("id") String id) {
         try {
             Integer numericId = Integer.valueOf(id);
-            // If it's numeric, delegate to the primary handler
             Employee employee = employeeService.getEmployee(numericId);
-            EmployeeResource employeeResource = EmployeeResourceMapper.mapEmployeeToEmployeeResource(employee);
-            // Serialize minimal JSON to avoid introducing object mappers here.
+            EmployeeResource r = EmployeeResourceMapper.mapEmployeeToEmployeeResource(employee);
             String json = "{"
-                    + "\"employeeId\":" + employeeResource.getEmployeeId() + ","
-                    + "\"firstName\":\"" + safe(employeeResource.getFirstName()) + "\","
-                    + "\"secondName\":\"" + safe(employeeResource.getSecondName()) + "\","
-                    + "\"role\":\"" + safe(employeeResource.getRole()) + "\""
+                    + "\"employeeId\":" + r.getEmployeeId() + ","
+                    + "\"firstName\":\"" + safe(r.getFirstName()) + "\","
+                    + "\"secondName\":\"" + safe(r.getSecondName()) + "\","
+                    + "\"role\":\"" + safe(r.getRole()) + "\""
                     + "}";
             return ResponseEntity.ok(json);
         } catch (NumberFormatException ex) {
             String body = "{"
                     + "\"error\":\"Employee not found\","
-                    + "\"message\":\"The path segment provided is not a numeric employeeId: '" + safe(id) + "'. "
-                    + "Use a numeric id, e.g. /employee/1.\","
+                    + "\"message\":\"The provided path segment is not a numeric employeeId: '" + safe(id) + "'. Use /employee/1.\","
                     + "\"docs\":\"/openapi.json\""
                     + "}";
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
@@ -93,13 +93,10 @@ public class EmployeeRestEndpoint {
 
     // PUBLIC_INTERFACE
     /**
-     * Simple list endpoint to make previews show non-404 content.
-     * Returns a small static list of example employees derived from known IDs
-     * using existing mapping to avoid new service methods.
+     * Optional list endpoint for previews/smoke tests; returns available probe IDs if present.
      */
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> listEmployeesForPreview() {
-        // Build a tiny list from a couple of known IDs if present; if fails, return empty list gracefully.
         List<String> items = new ArrayList<>();
         for (int probeId : new int[]{1, 2}) {
             try {
@@ -113,7 +110,7 @@ public class EmployeeRestEndpoint {
                         + "}";
                 items.add(item);
             } catch (Exception ignore) {
-                // If not found or errors, skip; we just want to provide some content if available
+                // skip if not available
             }
         }
         String response = "{\"items\":[" + String.join(",", items) + "]}";

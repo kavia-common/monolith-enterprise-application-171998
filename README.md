@@ -208,6 +208,35 @@ If Primary site considered fail (i.e. multiple failovers of one or more applicat
 if it is a Distributed Component Architecture)), then the Primary site should shutdown and thus Standby site
 would be required to be started up. 
 
+## Employee endpoint usage and common pitfalls
+
+- Correct path for a specific employee:
+  - GET /employee/1
+- Do NOT call with template placeholders:
+  - GET /employee/{employeeId}
+  - GET /employee/%7BemployeeId%7D
+  These will be rejected with HTTP 400 and guidance.
+- Non-numeric IDs will return 404 with a clear message:
+  - GET /employee/abc -> 404
+
+### Manual verification
+
+Assuming the app runs on http://localhost:3001:
+
+- curl -i http://localhost:3001/employee/1
+  - Expect 200 (if id=1 exists), or 404 if not present
+- curl -i http://localhost:3001/employee/%7BemployeeId%7D
+  - Expect 400 with guidance message
+- curl -i http://localhost:3001/employee/{employeeId}
+  - Expect 400 with guidance message
+- curl -i http://localhost:3001/employee/abc
+  - Expect 404 with message about non-numeric id
+
+### CORS / static handling
+
+- The application uses Spring MVC’s DispatcherServlet mapped to “/”, and REST controllers handle employee routes; there is no static default file handler serving these paths.
+- If you are calling from a browser frontend and encounter CORS issues during local development, configure your dev server proxy to forward API calls to http://localhost:3001, or add appropriate CORS configuration in your environment.
+
 ## Author
 
 Colin But.
